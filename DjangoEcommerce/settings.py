@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     'tailwind',
     'theme',
+    'products',
 ]
 
 TAILWIND_APP_NAME = "theme"
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'DjangoEcommerce.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
