@@ -1,0 +1,95 @@
+<nav
+  class="fixed top-0 z-20 w-full bg-gray-200 dark:bg-gray-800 border-b border-gray-800 dark:border-gray-400"
+>
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex h-16 items-center gap-6 justify-between">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3">
+        <img src="https://flowbite.com/docs/images/logo.svg" class="h-7" />
+        <span class="text-xl font-semibold text-heading">Flowbite</span>
+      </a>
+
+      <div class="flex flex-1 flex-row justify-end items-center gap-8">
+        <!-- Search (desktop) -->
+        <div class="hidden md:block w-full max-w-md">
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-4 flex items-center pointer-events-none"
+            >
+              <svg class="w-4 h-4 text-body" viewBox="0 0 24 24" fill="none">
+                <circle
+                  cx="11"
+                  cy="11"
+                  r="7"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <line
+                  x1="20"
+                  y1="20"
+                  x2="16.65"
+                  y2="16.65"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+
+            <input
+              type="search"
+              placeholder="Search products..."
+              class="w-full h-11 pl-11 pr-4 text-sm rounded-full bg-neutral-secondary-soft border border-default focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition"
+            />
+          </div>
+        </div>
+
+        <!-- User -->
+        <button
+          data-dropdown-toggle="user-dropdown"
+          class="flex rounded-full focus:ring-4 focus:ring-neutral-tertiary"
+        >
+          <img
+            class="w-8 h-8 rounded-full"
+            src="/static/images/avatar.png"
+            alt="User"
+          />
+        </button>
+      </div>
+
+      <!-- Mobile search button -->
+      <button
+        class="md:hidden p-2 rounded-base hover:bg-neutral-secondary-soft"
+        data-collapse-toggle="mobile-search"
+      >
+        <svg class="w-6 h-6 text-body" viewBox="0 0 24 24" fill="none">
+          <circle
+            cx="11"
+            cy="11"
+            r="7"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <line
+            x1="20"
+            y1="20"
+            x2="16.65"
+            y2="16.65"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile search -->
+    <div id="mobile-search" class="hidden md:hidden pb-4">
+      <input
+        type="search"
+        placeholder="Search products..."
+        class="w-full px-3 py-2 text-sm rounded-base bg-neutral-secondary-medium border border-default-medium"
+      />
+    </div>
+  </div>
+</nav>

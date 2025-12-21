@@ -1,0 +1,12 @@
+{% extends "root.html" %} {% block content %}
+<div
+  class="min-h-screen bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+>
+  {% include "components/nav_bar.html" %}
+  <main>
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      {% block page %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% endblock %}
