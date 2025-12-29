@@ -1,13 +1,15 @@
+from unicodedata import category
 from django.db import models
-from smart_selects.db_fields import ChainedForeignKey
+from uuid import uuid4
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 class Department(models.Model):
     """Represents a top-level product department (e.g., Electronics, Clothing).
 
     Stores metadata for SEO and a status flag to enable/disable the department.
     """
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     status = models.BooleanField(default=True)
@@ -24,7 +26,7 @@ class Category(models.Model):
 
     Categories group related products and reference their parent Department.
     """
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='categories')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -38,11 +40,11 @@ class Product(models.Model):
 
     Products belong to a Department and Category and can have images and variations.
     """
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=False)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='products')
-    category = ChainedForeignKey(Category, on_delete=models.CASCADE, related_name='products', chained_field="department", chained_model_field="department", show_all=False, auto_choose=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(null=True, blank=True)
@@ -50,10 +52,16 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        permissions = [
+            ('buy_product', 'Can buy product'),
+            ('sold_product', 'Can sell product'),
+        ]
 
     
 class VariationType(models.Model):
@@ -61,9 +69,17 @@ class VariationType(models.Model):
 
     The `type` field can be used to indicate input or presentation details.
     """
+    
+    types  = [
+        ('select', 'Select'),
+        ('radio', 'Radio'),
+        ('image', 'Image'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    type = models.CharField(max_length=100)
+    type = models.CharField(max_length=100, choices=types, default='select')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variation_types')
 
     def __str__(self):
         return self.name
@@ -73,9 +89,10 @@ class VariationTypeOption(models.Model):
 
     Options are tied to a VariationType and used by ProductVariation.
     """
+    
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    variation_type = models.ForeignKey(VariationType, on_delete=models.CASCADE, related_name='options')
+    variation_type = models.ForeignKey(VariationType, on_delete=models.SET_NULL, null=True, related_name='options')
 
     def __str__(self):
         return self.name
@@ -100,11 +117,11 @@ class ProductVariation(models.Model):
     """
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variations')
-    variation_type_option = models.ForeignKey(VariationTypeOption, on_delete=models.CASCADE, related_name='product_variations')
+    variation_type_option = models.JSONField(null=False, blank=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.product.name} - {self.variation_type_option.name}"
+        return self.product.name
