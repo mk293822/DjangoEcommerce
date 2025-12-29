@@ -4,7 +4,6 @@ from django.http import JsonResponse
 import nested_admin
 
 from products.forms import ProductVariationForm
-from products.services.variation_type_option_service import delete_option
 from .models import Department, Category, Product, ProductVariation, ProductVariationTypeOptionImage, VariationType, VariationTypeOption
 
 class CategoryInline(admin.TabularInline):
@@ -42,11 +41,6 @@ class VariationTypeAdmin(nested_admin.NestedModelAdmin):
     
     def number_of_options(self, obj):
         return obj.options.count()
-    
-    def delete_model(self, request, obj):
-        for option in obj.options.all():
-            delete_option(option)
-        super().delete_model(request, obj)
     
 @admin.register(ProductVariation)
 class ProductVariationAdmin(admin.ModelAdmin):

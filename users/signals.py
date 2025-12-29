@@ -7,46 +7,50 @@ from django.contrib.contenttypes.models import ContentType
 
 @receiver(post_migrate)
 def create_roles_and_permissions(sender, **kwargs):
-    if sender.name != 'users':
-        return 
+    if sender.name != "users":
+        return
 
-    print(f"Post-migrate signal received from app: {sender.name}")
+    super_admin, _ = Group.objects.get_or_create(name="SuperAdmin")
+    admin, _ = Group.objects.get_or_create(name="Admin")
+    customer, _ = Group.objects.get_or_create(name="Customer")
+    vendor, _ = Group.objects.get_or_create(name="Vendor")
 
-    admin_group, _ = Group.objects.get_or_create(name='Admin')
-    customer_group, _ = Group.objects.get_or_create(name='Customer')
-    vendor_group, _ = Group.objects.get_or_create(name='Vendor')
+    # SuperAdmin gets everything
+    super_admin.permissions.set(Permission.objects.all())
 
-    models = ['Department', 'Category', 'Product']
+    models = [
+        "Department",
+        "Category",
+        "Product",
+        "ProductVariation",
+        "VariationType",
+        "VariationTypeOption",
+        "ProductVariationTypeOptionImage",
+    ]
 
     for model_name in models:
-        model = apps.get_model('products', model_name)
+        model = apps.get_model("products", model_name)
         content_type = ContentType.objects.get_for_model(model)
 
-        admin_group.permissions.add(
-            *Permission.objects.filter(content_type=content_type)
-        )
+        perms = Permission.objects.filter(content_type=content_type)
 
-        if model_name == 'Product':
-            # Customer permissions
-            customer_group.permissions.add(
+        # Admin gets all perms for these models
+        admin.permissions.add(*perms)
+
+        if model_name == "Product":
+            customer.permissions.add(
                 *Permission.objects.filter(
                     content_type=content_type,
-                    codename__in=['view_product', 'buy_product']
+                    codename__in=["view_product", "buy_product"]
                 )
             )
 
-            # Vendor permissions
-            vendor_group.permissions.add(
+        if model_name not in ["Department", "Category"]:
+            vendor.permissions.add(
                 *Permission.objects.filter(
                     content_type=content_type,
-                    codename__in=[
-                        'add_product',
-                        'change_product',
-                        'view_product',
-                        'delete_product',
-                        'sold_product',
-                        'buy_product',
-                    ]
+                    codename__regex=r"^(add|change|delete|view|buy|sell)_"
                 )
             )
-    print("Roles and permissions have been set up.")
+
+    print("Roles and permissions created successfully")

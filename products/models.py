@@ -2,7 +2,6 @@ from unicodedata import category
 from django.db import models
 from uuid import uuid4
 from django.conf import settings
-from django.core.exceptions import ValidationError
 
 class Department(models.Model):
     """Represents a top-level product department (e.g., Electronics, Clothing).
@@ -60,7 +59,7 @@ class Product(models.Model):
     class Meta:
         permissions = [
             ('buy_product', 'Can buy product'),
-            ('sold_product', 'Can sell product'),
+            ('sell_product', 'Can sell product'),
         ]
 
     
