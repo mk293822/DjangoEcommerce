@@ -1,7 +1,7 @@
 
 import dis
 from django import forms
-from .models import Department, ProductVariation, VariationType
+from .models import ProductVariation, VariationType
 
 
 class ProductVariationForm(forms.ModelForm):

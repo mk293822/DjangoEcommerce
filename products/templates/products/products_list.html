@@ -1,10 +1,15 @@
-{% extends "layouts/authenticated_layout.html" %} {% block page %}
-<div class="container mx-auto px-4">
-  {% comment %}
-  <h1 class="text-2xl font-bold mb-4">Product List</h1>
-  {% endcomment %}
-  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {% comment %} Products will be listed here. {% endcomment %}
-  </div>
+{% extends "layouts/authenticated_layout.html" %}
+
+{% block authenticated_page %}
+
+<div class="container mx-auto mt-8">
+
+	<div
+		class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+	>
+		{% for product in products %}
+		{% include "products/components/product_item.html" with product=product %}
+		{% endfor %}
+	</div>
 </div>
 {% endblock %}

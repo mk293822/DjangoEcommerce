@@ -1,0 +1,67 @@
+{% load currency_filters %}
+
+
+<div
+	class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+>
+	<!-- Image -->
+	<div class="w-full h-48 bg-slate-200 dark:bg-slate-700 overflow-hidden">
+		{% if product.image %}
+		<img
+			src="{{ product.image.url }}"
+			alt="{{ product.name }}"
+			class="w-full h-full object-cover hover:scale-105 transition duration-300"
+		/>
+		{% else %}
+		<div
+			class="w-full h-full flex items-center justify-center text-slate-500 text-sm"
+		>
+			No Image for {{ product.name }}
+		</div>
+		{% endif %}
+	</div>
+
+	<!-- Info -->
+	<div class="p-4">
+		<h2
+			class="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-2"
+		>
+			{{ product.name }}
+		</h2>
+
+		<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+			{{ product.description }}
+		</p>
+		<div
+			class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2"
+		>
+			<a
+				href="#"
+				class="underline hover:text-slate-700 dark:hover:text-slate-200"
+			>
+				by {{ product.created_by.name }}
+			</a>
+			<span class="mx-1">in</span>
+			<a
+				href="#"
+				class="hover:underline hover:text-slate-700 dark:hover:text-slate-200"
+			>
+				{{ product.department.name }}
+			</a>
+		</div>
+
+		<div class="flex items-center justify-between mt-4">
+			<span
+				class="text-base font-semibold text-indigo-600 dark:text-indigo-400"
+			>
+				{{ product.price|currency }}
+			</span>
+
+			<button type="button"
+				class="text-xs cursor-pointer font-medium text-white bg-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-500 transition"
+			>
+				Add to Cart
+			</button>
+		</div>
+	</div>
+</div>

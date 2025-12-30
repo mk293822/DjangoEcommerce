@@ -52,7 +52,7 @@ class ProductVariationAdmin(admin.ModelAdmin):
     
     def variation_type_options(self, obj):
         options = VariationTypeOption.objects.filter(id__in=obj.variation_type_option)
-        return "-".join([str(option) for option in options])
+        return " - ".join([str(option) for option in options])
     
     def has_add_permission(self, request):
         return False

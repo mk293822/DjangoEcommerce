@@ -1,22 +1,27 @@
 <nav
-  class="fixed top-0 py-1 z-20 w-full border-b border-gray-800 dark:border-gray-400"
+  class="fixed top-0 z-30 w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700"
 >
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="flex h-16 items-center gap-6 justify-between">
+  <div class="max-w-7xl mx-auto py-4 px-4">
+    <div class="flex h-auto items-center justify-between">
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-3">
-        <img src="https://flowbite.com/docs/images/logo.svg" class="h-7" />
-        <span class="text-xl font-semibold text-heading">Flowbite</span>
-      </a>
+      <div class="flex items-center gap-2">
+        <img src="https://flowbite.com/docs/images/logo.svg" class="h-7 w-7" />
+        <span
+          class="text-base font-semibold tracking-wide text-slate-900 dark:text-slate-100"
+        >
+          Flowbite
+        </span>
+      </div>
 
-      <div class="flex flex-1 flex-row justify-end items-center gap-8">
+      <!-- Right side -->
+      <div class="flex items-center gap-3">
         <!-- Search (desktop) -->
-        <div class="hidden md:block w-full max-w-md">
-          <div class="relative">
+        <div class="hidden md:block">
+          <div class="relative w-72">
             <span
-              class="absolute inset-y-0 left-4 flex items-center pointer-events-none"
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
             >
-              <svg class="w-4 h-4 text-body" viewBox="0 0 24 24" fill="none">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
                 <circle
                   cx="11"
                   cy="11"
@@ -38,58 +43,64 @@
 
             <input
               type="search"
+              name="q"
               placeholder="Search products..."
-              class="w-full h-11 pl-11 pr-4 text-sm rounded-full bg-neutral-secondary-soft border border-default focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition"
+              class="w-full h-9 pl-9 pr-4 text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
             />
           </div>
         </div>
 
-        <!-- User -->
+        <!-- Mobile search toggle -->
         <button
-          data-dropdown-toggle="user-dropdown"
-          class="flex rounded-full focus:ring-4 focus:ring-neutral-tertiary"
+          class="md:hidden p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+          data-collapse-toggle="mobile-search"
         >
-          <img
-            class="w-8 h-8 rounded-full"
-            src="/static/images/avatar.png"
-            alt="User"
-          />
+          <svg
+            class="w-5 h-5 text-slate-600 dark:text-slate-300"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="7"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="20"
+              y1="20"
+              x2="16.65"
+              y2="16.65"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
         </button>
       </div>
-
-      <!-- Mobile search button -->
-      <button
-        class="md:hidden p-2 rounded-base hover:bg-neutral-secondary-soft"
-        data-collapse-toggle="mobile-search"
-      >
-        <svg class="w-6 h-6 text-body" viewBox="0 0 24 24" fill="none">
-          <circle
-            cx="11"
-            cy="11"
-            r="7"
-            stroke="currentColor"
-            stroke-width="2"
-          />
-          <line
-            x1="20"
-            y1="20"
-            x2="16.65"
-            y2="16.65"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
     </div>
 
     <!-- Mobile search -->
     <div id="mobile-search" class="hidden md:hidden pb-4">
       <input
         type="search"
+        name="q"
         placeholder="Search products..."
-        class="w-full px-3 py-2 text-sm rounded-base bg-neutral-secondary-medium border border-default-medium"
+        class="w-full px-4 py-2 text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40"
       />
     </div>
+
   </div>
+  <!-- Department links -->
+    <div class="flex gap-4 px-8 py-2 overflow-x-auto border-t border-slate-200 dark:border-slate-700">
+      {% for department in departments %}
+        <a
+          href="#"
+          class="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 whitespace-nowrap"
+        >
+          {{ department.name }}
+        </a>
+      {% endfor %}
+    </div>
 </nav>
