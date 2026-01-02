@@ -1,0 +1,3 @@
+GROUP_ADMIN = 'Admin'
+GROUP_CUSTOMER = 'Customer'
+GROUP_VENDOR = 'Vendor'

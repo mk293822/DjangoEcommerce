@@ -2,6 +2,8 @@
 from django import forms
 from .models import User
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import Group
+from .constants import GROUP_CUSTOMER
 
 class UserCreationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -11,11 +13,13 @@ class UserCreationForm(forms.ModelForm):
         model = User
         fields = ['name', 'email', 'password']
 
-    def save(self, commit=True):
+    def save(self, commit=True, group_name=GROUP_CUSTOMER):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()
+            customer_group = Group.objects.get(name=group_name)
+            user.groups.add(customer_group)
         return user
     
 class LoginForm(forms.Form):

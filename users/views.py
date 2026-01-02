@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from users.forms import LoginForm, UserCreationForm
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 # Create your views here.
 def signup(request):
@@ -14,11 +16,10 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('product_list')
     else:
         form = UserCreationForm()
-
     
     return render(request, 'users/sign_up.html', {'form': form})
 
@@ -33,9 +34,14 @@ def login_view(request):
             password = form.cleaned_data['password']
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('product_list')
     else:
         form = LoginForm()
             
     return render(request, 'users/login.html', {'form': form})
+
+@csrf_exempt
+def logout_view(request):
+    logout(request)
+    return redirect('product_list')

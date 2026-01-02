@@ -1,6 +1,5 @@
 {% load currency_filters %}
 
-
 <div
 	class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
 >
@@ -43,7 +42,7 @@
 			</a>
 			<span class="mx-1">in</span>
 			<a
-				href="#"
+				href="?department={{ product.department.id }}"
 				class="hover:underline hover:text-slate-700 dark:hover:text-slate-200"
 			>
 				{{ product.department.name }}
@@ -57,8 +56,8 @@
 				{{ product.price|currency }}
 			</span>
 
-			<button type="button"
-				class="text-xs cursor-pointer font-medium text-white bg-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-500 transition"
+			<button type="button" data-product-id="{{ product.id }}"
+				class="add-to-cart text-xs cursor-pointer font-medium text-white bg-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-500 transition"
 			>
 				Add to Cart
 			</button>

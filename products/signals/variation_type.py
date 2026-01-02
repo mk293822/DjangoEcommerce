@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
-from .models import ProductVariation, VariationType, VariationTypeOption
+from products.models.variation_type import VariationType, VariationTypeOption
+from products.models.product import ProductVariation
 from itertools import product as iterator_product
 
 @receiver(post_save, sender=VariationType)
@@ -63,3 +64,4 @@ def delete_variation_type_option(sender, instance, **kwargs):
                     opt_id for opt_id in opts if opt_id != instance.id
                 ]
                 variation.save(update_fields=["variation_type_option"])
+                

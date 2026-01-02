@@ -1,8 +1,8 @@
 
-import dis
+from urllib import request
 from django import forms
-from .models import ProductVariation, VariationType
-
+from .models.variation_type import VariationType
+from .models.product import Product, ProductVariation
 
 class ProductVariationForm(forms.ModelForm):
     
@@ -19,6 +19,7 @@ class ProductVariationForm(forms.ModelForm):
         
     
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
         variation_types = VariationType.objects.filter(product=self.instance.product)
@@ -33,6 +34,21 @@ class ProductVariationForm(forms.ModelForm):
         option_display = ""
         for option in options:
             option_display += f"{option.variation_type.name}: {option.name} \n "
-
+            
         self.fields['variation_type_option_display'].initial = option_display
+        if request is not None:
+            self.fields['product'].queryset = Product.objects.filter(created_by=request.user)
         
+        
+class VariationTypeForm(forms.ModelForm):
+    class Meta:
+        model = VariationType
+        fields = ['name','type', 'product']
+        
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request", None)
+        super().__init__(*args, **kwargs)
+        
+        if request is not None:
+            self.fields['product'].queryset = Product.objects.filter(created_by=request.user)
+            
