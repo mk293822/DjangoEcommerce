@@ -2,10 +2,27 @@ from django.db import models
 from uuid import uuid4
 from django.conf import settings
 from .department import Department, Category
+from django.db.models import Q
 
-class ProductManager(models.Manager):
+class ProductQuerySet(models.QuerySet):
     def active(self):
         return self.filter(status=True)
+    
+    def search(self, query):
+        if not query:
+            return self
+        
+        return self.filter(Q(name__contains=query)|Q(slug__contains=query))
+
+class ProductManager(models.Manager):
+    def get_queryset(self):
+        return ProductQuerySet(self.model, using=self._db)
+    
+    def active(self):
+        return self.get_queryset().active()
+    
+    def search(self, query):
+        return self.get_queryset().search(query)
 
 class Product(models.Model):
     

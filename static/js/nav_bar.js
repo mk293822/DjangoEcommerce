@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						productList.innerHTML = html;
 					});
 
-				history.replaceState(null, "", newUrl);
+				history.replaceState(null, "", url);
 			}, 300); // 300ms debounce
 		});
 	}

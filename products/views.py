@@ -17,8 +17,7 @@ def product_list(request):
     if department_id != "all":
         products = products.filter(department_id=department_id)
         
-    if query:
-        products = products.filter(name__contains=query)
+    products = products.search(query)
         
     context = {
         'products': products, 
