@@ -3,7 +3,7 @@
 <nav
   class="fixed top-0 z-30 w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700"
 >
-  <div class="mx-auto py-2 px-8">
+  <div class="mx-auto px-8">
     <div class="flex h-auto items-center justify-between">
       <!-- Logo -->
       <div class="flex items-center gap-2">
@@ -44,8 +44,10 @@
             </span>
 
             <input
+              value="{{query}}"
               type="search"
               name="q"
+              data-search-input
               placeholder="Search products..."
               class="w-full h-9 pl-9 pr-4 text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
             />
@@ -76,16 +78,16 @@
         </div>
 
         <!-- Profile button -->
-        <div class='relative inline-block'>
+        <div class='relative inline-block mt-3 -mb-2'>
           <!-- Profile button -->
           <button
             id="profile-button"
-            class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+            class="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
           >
             <img
-              src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+              src="{{ product.image.url }}"
               alt="User Profile"
-              class="w-10 h-10 rounded-full"
+              class="w-10 h-10 rounded-full object-cover"
             />
           </button>
             <!-- Profile dropdown-->
@@ -143,5 +145,5 @@
       {% endfor %}
     </div>
     {% endif %}
-  <script src="{% static 'js/nav_bar.js' %}"></script>
+  <script src="{% static 'js/nav_bar.js' %}" defer></script>
 </nav>

@@ -1,10 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 	// Select all add-to-cart buttons
 	const buttons = document.querySelectorAll(".add-to-cart");
-	const productList = document.querySelector("#productList");
-	const csrfToken = productList.dataset.csrf;
-	const loginUrl = productList.dataset.loginUrl;
-	const isAuthenticated = productList.dataset.auth;
 
 	buttons.forEach((button) => {
 		button.addEventListener("click", function () {

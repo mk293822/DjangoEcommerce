@@ -1,26 +1,30 @@
-(function ($) {
-  $(document).ready(function () {
-    const department = $("#id_department");
-    const category = $("#id_category");
+document.addEventListener("DOMContentLoaded", () => {
+  const department = document.getElementById("id_department");
+  const category = document.getElementById("id_category");
 
-    if (!department.length || !category.length) return;
+  if (!department || !category) return;
 
-    department.on("change", function () {
-      const departmentId = $(this).val();
+  department.addEventListener("change", async () => {
+    const departmentId = department.value;
 
-      category.empty();
-      category.append('<option value="">---------</option>');
+    category.innerHTML = '<option value="">---------</option>';
 
-      if (!departmentId) return;
+    if (!departmentId) return;
 
-      fetch(`load-categories/?department_id=${departmentId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          data.forEach((cat) => {
-            category.append(`<option value="${cat.id}">${cat.name}</option>`);
-          });
-        })
-        .catch((err) => console.error(err));
-    });
+    try {
+      const response = await fetch(
+        `/admin/products/product/load-categories/?department_id=${departmentId}`
+      );
+      const data = await response.json();
+
+      data.forEach((cat) => {
+        const option = document.createElement("option");
+        option.value = cat.id;
+        option.textContent = cat.name;
+        category.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Category load failed", err);
+    }
   });
-})(django.jQuery);
+});

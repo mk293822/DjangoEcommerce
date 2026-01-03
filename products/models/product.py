@@ -2,6 +2,11 @@ from django.db import models
 from uuid import uuid4
 from django.conf import settings
 from .department import Department, Category
+
+class ProductManager(models.Manager):
+    def active(self):
+        return self.filter(status=True)
+
 class Product(models.Model):
     
     """Product storing core product data: name, description, price and stock.
@@ -21,7 +26,9 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-
+    
+    objects = ProductManager()
+     
     def __str__(self):
         return self.name
 
@@ -29,6 +36,7 @@ class Product(models.Model):
         permissions = [
             ('sell_product', 'Can sell product'),
         ]
+        
 
 class ProductVariation(models.Model):
     """A concrete product variation linking a Product to a VariationTypeOption.

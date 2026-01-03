@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-	// Profile dropdown
 	const profileDropdown = document.getElementById("profile-dropdown");
 	const profileButton = document.getElementById("profile-button");
 
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// 🔍 Search
 	const searchInput = document.querySelector("[data-search-input]");
-	const productList = document.querySelector("#productList");
+	const productList = document.querySelector("#product-list");
 
 	let debounceTimer;
 

@@ -9,19 +9,28 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def product_list(request):
     
-    products = Product.objects.all()
+    query = request.GET.get('q', '')
+    department_id = request.GET.get('department', 'all')
+    products = Product.objects.active()
     departments = Department.objects.filter(status=True)
     
-    department_id = request.GET.get('department')
-    if department_id == "all" or not department_id:
-        products = Product.objects.all()
-        selected_department = "all"
-    else:
-        products = Product.objects.filter(department_id=department_id)
-        selected_department = department_id
+    if department_id != "all":
+        products = products.filter(department_id=department_id)
+        
+    if query:
+        products = products.filter(name__contains=query)
+        
+    context = {
+        'products': products, 
+        'departments': departments, 
+        'selected_department': department_id, 
+        'query': query,
+        }         
 
-
-    return render(request, 'products/products_list.html', {'products': products, 'departments': departments, 'selected_department': selected_department})
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return render(request, "products/partials/products_list.html", {"products": products})
+    
+    return render(request, 'products/home.html', context)
 
 @csrf_exempt
 def add_to_cart(request):
@@ -30,9 +39,11 @@ def add_to_cart(request):
         product_id = data.get("product_id")
         product_variation = data.get("product_variation")
         product = Product.objects.get(id=product_id)
-        cart, _ = Cart.objects.get_or_create(user=request.user)
-        cart_item = cart.add_product(product, variation=product_variation)
         
-        return JsonResponse({"status": "success", "cart_item": cart_item})
+        if product.status:
+            cart, _ = Cart.objects.get_or_create(user=request.user)
+            cart_item = cart.add_product(product, variation=product_variation)
+            
+            return JsonResponse({"status": "success", "cart_item": cart_item})
         
-        
+        return JsonResponse({'error': 'Product is suspended!'})
