@@ -7,4 +7,8 @@ def format_currency(amount):
     try:
         return babel_format_currency(amount, settings.CURRENCY_FORMAT, locale=settings.CURRENCY_LOCALE)
     except Exception:
-        return f"{settings.CURRENCY_FORMAT} {amount:,.2f}"
+        try:
+            amount = float(amount)  # <-- ensure numeric
+            return f"{settings.CURRENCY_FORMAT} {amount:,.2f}"
+        except (ValueError, TypeError):
+            return f"{settings.CURRENCY_FORMAT} 0.00"  # fallback

@@ -8,6 +8,7 @@
 	class="container mt-12"
 	data-login-url="{% url 'login' %}"
 	data-csrf="{{ csrf_token }}"
+	data-cart-url="{% url 'add_to_cart' %}"
 	data-auth="{{ request.user.authenticated|yesno:'true,false' }}"
  >
 	{% include "products/partials/products_list.html" %}

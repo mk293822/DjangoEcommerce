@@ -1,7 +1,23 @@
-venv
-__pycache__
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
 .env
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# Editor / OS
 .DS_Store
-media
-.vscode
+.vscode/
+.idea/
+*.swp
+
+# Byte-compiled / cache
+*.pyc
+db.sqlite3

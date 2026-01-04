@@ -1,0 +1,10 @@
+
+<div id="cartItemsContainer" class="max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700">
+    {% for item in cart_items %}
+    {% include './mini_cart_item.html' %}
+    {% empty %}
+      <div id='emptyCartContainer' class="py-6 text-center text-sm text-slate-500">
+        Your cart is empty
+      </div>
+    {% endfor %}
+  </div>

@@ -17,7 +17,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('product_list')
+            return redirect('home')
     else:
         form = UserCreationForm()
     
@@ -25,7 +25,7 @@ def signup(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('product_list')
+        return redirect('home')
     
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -35,7 +35,7 @@ def login_view(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('product_list')
+                return redirect('home')
     else:
         form = LoginForm()
             
@@ -44,4 +44,4 @@ def login_view(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return redirect('product_list')
+    return redirect('home')

@@ -1,5 +1,4 @@
 {% load static %}
-
 <nav
   class="fixed top-0 z-30 w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700"
 >
@@ -18,7 +17,7 @@
       <!-- Right side -->
       <div class="flex items-center gap-3 overflow-visible">
         <!-- Search (desktop) -->
-        <div class="block">
+        <div class="hidden md:block">
           <div class="relative w-96">
             <span
               class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -56,70 +55,12 @@
 
         {% if request.user.is_authenticated %}
 
-        <!-- Cart Count -->
-        <div>
-          <!-- Cart button -->
-          <button
-            class="relative p-2 ps-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#9CA3AF" version="1.1" id="Capa_1" width="30px" height="30px" viewBox="0 0 902.86 902.86" xml:space="preserve">
-                <g>
-                  <g>
-                    <path d="M671.504,577.829l110.485-432.609H902.86v-68H729.174L703.128,179.2L0,178.697l74.753,399.129h596.751V577.829z     M685.766,247.188l-67.077,262.64H131.199L81.928,246.756L685.766,247.188z"/>
-                    <path d="M578.418,825.641c59.961,0,108.743-48.783,108.743-108.744s-48.782-108.742-108.743-108.742H168.717    c-59.961,0-108.744,48.781-108.744,108.742s48.782,108.744,108.744,108.744c59.962,0,108.743-48.783,108.743-108.744    c0-14.4-2.821-28.152-7.927-40.742h208.069c-5.107,12.59-7.928,26.342-7.928,40.742    C469.675,776.858,518.457,825.641,578.418,825.641z M209.46,716.897c0,22.467-18.277,40.744-40.743,40.744    c-22.466,0-40.744-18.277-40.744-40.744c0-22.465,18.277-40.742,40.744-40.742C191.183,676.155,209.46,694.432,209.46,716.897z     M619.162,716.897c0,22.467-18.277,40.744-40.743,40.744s-40.743-18.277-40.743-40.744c0-22.465,18.277-40.742,40.743-40.742    S619.162,694.432,619.162,716.897z"/>
-                  </g>
-                </g>
-            </svg>
-            <span
-              class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"
-              >3</span
-            >
-          </button>
-        </div>
-
-        <!-- Profile button -->
-        <div class='relative inline-block mt-3 -mb-2'>
-          <!-- Profile button -->
-          <button
-            id="profile-button"
-            class="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
-          >
-            <img
-              src="{{ product.image.url }}"
-              alt="User Profile"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-          </button>
-            <!-- Profile dropdown-->
-            <div id="profile-dropdown" class="absolute opacity-0 pointer-events-none z-50 right-10 shadow-slate-800 dark:shadow-slate-400 min-w-max w-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow py-2 transition-opacity duration-200">
-              <a href="#" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">Profile</a>
-              <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">To Admin Panel</a>
-              <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">Logout</a>
-            </div>
-        </div>
+        {% include "./authenticated_nav_bar.html" %}
      
         {% else %}
-        <div class="flex gap-2 flex-row">
 
-          <div class="py-3">
-            <a
-              href="{% url 'login' %}"
-              class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-full transition"
-            >
-              Login
-            </a>
-          </div>
+        {% include "./guest_nav_bar.html" %}
 
-         <div class="py-3">
-            <a
-              href="{% url 'signup' %}"
-              class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-full transition"
-            >
-              Sign Up
-            </a>
-          </div>
-
-        </div>
         {% endif %}
         
       </div>
@@ -127,23 +68,7 @@
 
   </div>
   <!-- Department links -->
-    {% if departments.count > 0 %}
-    <div class="flex gap-4 px-8 py-2 overflow-x-auto border-t border-slate-200 dark:border-slate-700">
-      
-      <!-- All link -->
-      <a href="?department=all"
-        class="text-sm font-medium whitespace-nowrap {% if selected_department == 'all' %}text-indigo-600 dark:text-indigo-400 underline{% else %}text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400{% endif %}">
-        All
-      </a>
+  {% include "./partials/department_nav_bar.html" %}
 
-      <!-- Department links -->
-      {% for department in departments %}
-        <a href="?department={{ department.id }}"
-          class="text-sm font-medium whitespace-nowrap {% if selected_department|default:'' == department.id|stringformat:'s' %}text-indigo-600 underline dark:text-indigo-400{% else %}text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400{% endif %}">
-          {{ department.name }}
-        </a>
-      {% endfor %}
-    </div>
-    {% endif %}
   <script src="{% static 'js/nav_bar.js' %}" defer></script>
 </nav>

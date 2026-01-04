@@ -2,6 +2,7 @@ from django.db import models
 from uuid import uuid4
 from django.conf import settings
 from .product import Product, ProductVariation
+from django.forms.models import model_to_dict
 
 class Cart(models.Model):
     """A user's shopping cart, linked to the user and containing multiple CartItems.
@@ -48,7 +49,8 @@ class Cart(models.Model):
             cart_item.quantity += 1
             cart_item.save()
             
-        return cart_item
+        return model_to_dict(cart_item)
+
 
 class CartItem(models.Model):
     """An item in a user's shopping cart, linking to a Product and optional ProductVariation.
@@ -64,7 +66,7 @@ class CartItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name} for {self.user.name}"
+        return self.product.name
     
     class Meta:
         constraints = [
