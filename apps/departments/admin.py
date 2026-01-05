@@ -16,3 +16,18 @@ class DepartmentAdmin(admin.ModelAdmin):
     def numbers_of_categories(self, obj):
         return obj.categories.count()
 
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'department')
+    search_fields = ('name', 'department')
+    sortable_by = ('department', 'name')
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request, obj = ...):
+        return False
+    
+    def has_delete_permission(self, request, obj = ...):
+        return False
+    
