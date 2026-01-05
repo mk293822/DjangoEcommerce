@@ -1,0 +1,16 @@
+<div>
+	<div
+		class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+	>
+		{% for product in products %} 
+		{% include "products/partials/product_item.html" with product=product %} 
+		{% endfor %}
+	</div>
+	{% if products.count < 1 %}
+	<div class="flex justify-center items-center pt-40">
+		<p class="text-3xl font-extrabold text-slate-800 dark:text-slate-200">
+			No Product Yet
+		</p>
+	</div>
+	{%endif%}
+</div>

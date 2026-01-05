@@ -48,7 +48,9 @@
 				class="px-3 py-2 border-t border-slate-200 dark:border-slate-700 text-sm"
 			>
 				<div class="flex justify-between font-medium mb-1">
-					<div><span class="cartItemCount">{{ cart.total_items }}</span> items</div>
+					<div>
+						<span class="cartItemCount">{{ cart.total_items }}</span> items
+					</div>
 					<span class="cartItemTotalPrice">{{ cart.total_price|currency}}</span>
 				</div>
 
@@ -63,17 +65,13 @@
 	</div>
 
 	<!-- Profile button -->
-	<div class="relative inline-block mt-3 -mb-2">
+	<div class="relative inline-block">
 		<!-- Profile button -->
 		<button
 			id="profile-button"
 			class="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
 		>
-			<img
-				src="{{ product.image.url }}"
-				alt="User Profile"
-				class="w-10 h-10 rounded-full object-cover"
-			/>
+			{% include './partials/user_icon.html' %}
 		</button>
 		<!-- Profile dropdown-->
 		<div

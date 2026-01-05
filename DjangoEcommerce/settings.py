@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     'theme',
     'guardian',
     'nested_admin',
-    'users',
-    'products',
+    'apps.users.apps.UsersConfig',
+    'apps.departments.apps.DepartmentsConfig',
+    'apps.products.apps.ProductsConfig',
+    'apps.carts.apps.CartsConfig'
 ]
 
 TAILWIND_APP_NAME = "theme"

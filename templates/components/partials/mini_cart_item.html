@@ -21,6 +21,9 @@
           </p>
           <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400">
             <p>x<span class="cartItemEachCount">{{ item.quantity }}</span></p>
+            <p>
+              {{item.variation.variation_type_options|safe}}
+            </p>
             <span>{{ item.product.price|currency }}</span>
           </div>
         </div>

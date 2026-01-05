@@ -1,0 +1,17 @@
+{% load initials %}
+{% if request.user.avatar %}
+<img
+	class="w-10 h-10 rounded-full object-cover"
+	alt="{{ request.user.name }}"
+	src="{{ request.user.avatar.url }}"
+/>
+{% else %}
+<div class="avatar mx-auto">
+  <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-800 flex items-center justify-center">
+    <span class="text-xl font-semibold">
+      {{ request.user.name|initials }}
+    </span>
+  </div>
+</div>
+
+{% endif %}

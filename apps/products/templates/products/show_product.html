@@ -1,0 +1,159 @@
+{% extends "layouts/authenticated_layout.html" %} 
+
+{% load currency_filters %}
+{% block authenticated_page %}
+
+<div>
+	<header>
+		<title>{product.title}</title>
+		<meta
+			name="title"
+			content="{{product.name}}"
+		/>
+		<meta
+			name="description"
+			content="{{product.description}}"
+		/>
+		<link
+			rel="canonical"
+			href="{% url 'show_product' product.slug %}"
+		/>
+
+		<meta
+			property="og:title"
+			content="{{product.name}}"
+		/>
+		<meta
+			property="og:image"
+			content="{{product.imgae.url}}"
+		/>
+		<meta
+			property="og:description"
+			content="{{product.description}}"
+		/>
+		<meta
+			property="og:url"
+			content="{% url 'show_product' product.slug %}"
+		/>
+		<meta
+			property="og:type"
+			content="product"
+		/>
+		<meta
+			property="og:site_name"
+			content="Ecommerce"
+		/>
+	</header>
+	<!-- Container -->
+	<div class="container mx-auto p-8">
+		<div class="grid gap-8 grid-cols-1 lg:grid-cols-12">
+			<!-- Carousel / Images -->
+			<div class="col-span-6">
+				<div class="carousel w-full h-96 rounded-2xl overflow-hidden">
+					<!-- Replace with real images -->
+					<div class="carousel-item w-full">
+						<img
+							src="{{ product.imgae.url }}"
+							class="w-full h-full object-cover"
+						/>
+					</div>
+					<div class="carousel-item w-full">
+						<img
+							src="IMAGE_URL_2"
+							class="w-full h-full object-cover"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<!-- Product Info -->
+			<div class="col-span-6">
+				<h1 class="text-3xl font-bold mb-2">Product Title Here</h1>
+
+				<!-- Vendor & Department -->
+				<p class="mb-8 text-sm text-gray-500">
+					by
+					<a
+						href="#"
+						class="hover:underline text-indigo-600"
+						>{{prodcut.created_by.name}}</a
+					>
+					&nbsp; in
+					<a
+						href="#"
+						class="hover:underline text-indigo-600"
+						>{{product.department.name}}</a
+					>
+				</p>
+
+				<!-- Price -->
+				<div class="text-3xl font-semibold text-indigo-600 mb-4">$123.45</div>
+
+				<!-- Variation Types -->
+				<div class="mb-6">
+					<!-- Image variation example -->
+					<div class="mb-4">
+						<b class="block mb-2">Color</b>
+						<div class="flex gap-2">
+							<img
+								src="COLOR1_THUMB"
+								class="w-12 h-12 rounded cursor-pointer border-2 border-indigo-600"
+							/>
+							<img
+								src="COLOR2_THUMB"
+								class="w-12 h-12 rounded cursor-pointer border-2 border-transparent hover:border-indigo-400"
+							/>
+						</div>
+					</div>
+
+					<!-- Radio variation example -->
+					<div class="mb-4">
+						<b class="block mb-2">Size</b>
+						<div class="flex gap-2">
+							<input
+								type="radio"
+								name="size"
+								class="btn btn-outline"
+								checked
+							/>
+							S
+							<input
+								type="radio"
+								name="size"
+								class="btn btn-outline"
+							/>
+							M
+							<input
+								type="radio"
+								name="size"
+								class="btn btn-outline"
+							/>
+							L
+						</div>
+					</div>
+				</div>
+
+				<!-- Low stock warning -->
+				<div class="text-error mb-4">Only {{product.stock}} left</div>
+
+				<!-- Quantity & Add to Cart -->
+				<div class="flex gap-4 mb-8">
+					<select class="select select-bordered w-full">
+						{% for i in "0"|add:product.stock|make_list %}
+                            <option class="bg-slate-700" value="{{ forloop.counter }}">Quantity: {{ forloop.counter }}</option>
+                        {% endfor %}
+					</select>
+					<button class="btn btn-primary w-40">Add To Cart</button>
+				</div>
+
+				<!-- About this item -->
+				<b class="text-xl block mb-2">About this Item</b>
+				<div class="wysiwyg-output text-gray-400">
+					{{product.description}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
