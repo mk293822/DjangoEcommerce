@@ -18,10 +18,9 @@ def assign_product_permissions(sender, instance, created, **kwargs):
     assign_perm("products.delete_product", instance.created_by, instance)
     assign_perm("products.view_product", instance.created_by, instance)
     
-    print(f"Permission added successfully to user ${instance.created_by.name}")
     
 @receiver(post_save, sender=ProductVariation)
-def assign_product_permissions(sender, instance, created, **kwargs):
+def assign_product_variation_permissions(sender, instance, created, **kwargs):
     if not created:
         return
 
@@ -31,7 +30,6 @@ def assign_product_permissions(sender, instance, created, **kwargs):
         assign_perm("products.delete_productvariation", creator, instance)
         assign_perm("products.view_productvariation", creator, instance)
         
-    print(f"Permission added successfully to user ${creator.name}")
     
 
 
@@ -45,7 +43,6 @@ def assign_variation_type_permissions(sender, instance, created, **kwargs):
         assign_perm("products.change_variationtype", creator, instance)
         assign_perm("products.delete_variationtype", creator, instance)
         assign_perm("products.view_variationtype", creator, instance)
-    print(f"Permission added successfully to user ${creator.name}")
 
     
 
@@ -60,7 +57,6 @@ def assign_variation_type_option_permissions(sender, instance, created, **kwargs
         assign_perm("products.change_variationtypeoption", creator, instance)
         assign_perm("products.delete_variationtypeoption", creator, instance)
         assign_perm("products.view_variationtypeoption", creator, instance)
-    print(f"Permission added successfully to user ${creator.name}")
 
     
 
@@ -81,6 +77,5 @@ def assign_variation_type_option_image_permissions(sender, instance, created, **
         assign_perm(
             "products.view_variationtypeoptionimage", creator, instance
         )
-    print(f"Permission added successfully to user ${creator.name}")
 
     

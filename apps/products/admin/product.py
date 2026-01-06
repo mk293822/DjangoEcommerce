@@ -6,6 +6,7 @@ from apps.products.forms import ProductVariationForm
 from apps.products.models.variation_type import VariationTypeOption
 from apps.products.models import Category
 from apps.products.models.product import ProductVariation, Product
+from apps.products.services.slug_service import SlugService
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ModelAdmin):
@@ -66,5 +67,7 @@ class ProductAdmin(ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not change:
             obj.created_by = request.user
+        
+        SlugService.assign_slug_to_model(obj)
         return super().save_model(request, obj, form, change)
         

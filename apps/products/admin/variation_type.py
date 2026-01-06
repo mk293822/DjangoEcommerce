@@ -3,30 +3,19 @@ from apps.products.admin.base import NestedAdmin, NestedAdminInline
 from apps.products.forms import VariationTypeForm
 from apps.products.models.variation_type import VariationTypeOptionImage, VariationType, VariationTypeOption
 from apps.products.services.permission_check import has_permission_to_create
+from apps.products.services.product_variation import ProductVariationServices
 
 
 class VariationTypeOptionImageInline(NestedAdminInline):
     model = VariationTypeOptionImage
     fields = ('image', 'order')
     extra = 0
-    
-    def save_model(self, request, obj, form, change):
-        if not change:
-            has_permission_to_create(obj.variation_type_option.variation_type.product.created_by, request.user)
-        
-        super().save_model(request, obj, form, change)
-             
              
 class VariationTypeOptionInline(NestedAdminInline):
     model = VariationTypeOption
     extra = 0
     inlines = [VariationTypeOptionImageInline]
     
-    def save_model(self, request, obj, form, change):
-        if not change:
-            has_permission_to_create(obj.variation_type.product.created_by, request.user)
-        super().save_model(request, obj, form, change)
-        
 
 @admin.register(VariationType)
 class VariationTypeAdmin(NestedAdmin):
@@ -54,4 +43,12 @@ class VariationTypeAdmin(NestedAdmin):
         if not change:
             has_permission_to_create(obj.product.created_by, request.user) 
         super().save_model(request, obj, form, change)
-    
+            
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+
+        if not hasattr(request, "_variation_created"):
+            ProductVariationServices.on_create_option(form.instance.product.id)
+            request._variation_created = True
+
+        
