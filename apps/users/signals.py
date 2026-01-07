@@ -3,7 +3,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_migrate, pre_delete, pre_save
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from apps.core.services.services import delete_file_from_media
 from apps.users.models import User
 from .constants import *
 from django.db import transaction
