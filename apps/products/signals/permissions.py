@@ -8,74 +8,61 @@ from apps.products.models.variation_type import (
     VariationTypeOptionImage,
 )
 
-
-@receiver(post_save, sender=Product)
-def assign_product_permissions(sender, instance, created, **kwargs):
-    if not created or not getattr(instance, "created_by"):
-        return
-
-    assign_perm("products.change_product", instance.created_by, instance)
-    assign_perm("products.delete_product", instance.created_by, instance)
-    assign_perm("products.view_product", instance.created_by, instance)
+class ProductsPermissionServices:
     
+    PERMS = ['view', 'change', 'delete']
     
-@receiver(post_save, sender=ProductVariation)
-def assign_product_variation_permissions(sender, instance, created, **kwargs):
-    if not created:
-        return
+    @staticmethod
+    @receiver(post_save, sender=Product)
+    def assign_product_permissions(sender, instance, created, **kwargs):
+        if not created or not getattr(instance, "created_by"):
+            return
 
-    creator = instance.product.created_by
-    if creator:
-        assign_perm("products.change_productvariation", creator, instance)
-        assign_perm("products.delete_productvariation", creator, instance)
-        assign_perm("products.view_productvariation", creator, instance)
+        ProductsPermissionServices.assgn_parms(instance.created_by, instance, 'product')
+
         
+    @staticmethod    
+    @receiver(post_save, sender=ProductVariation)
+    def assign_product_variation_permissions(sender, instance, created, **kwargs):
+        if not created:
+            return
+
+        creator = instance.product.created_by
+        if creator:
+            ProductsPermissionServices.assgn_parms(creator, instance, 'productvariation')
+            
+
+    @staticmethod 
+    @receiver(post_save, sender=VariationType)
+    def assign_variation_type_permissions(sender, instance, created, **kwargs):
+        if not created:
+            return
+
+        creator = instance.product.created_by
+        if creator:
+            ProductsPermissionServices.assgn_parms(creator, instance, 'variationtype')
+
+    @staticmethod
+    @receiver(post_save, sender=VariationTypeOption)
+    def assign_variation_type_option_permissions(sender, instance, created, **kwargs):
+        if not created:
+            return
+
+        creator = instance.variation_type.product.created_by
+        if creator:
+            ProductsPermissionServices.assgn_parms(creator, instance, 'variationtypeoption')
+
+    @staticmethod
+    @receiver(post_save, sender=VariationTypeOptionImage)
+    def assign_variation_type_option_image_permissions(sender, instance, created, **kwargs):
+        if not created:
+            return
+
+        creator = instance.variation_type_option.variation_type.product.created_by
+        if creator:
+            ProductsPermissionServices.assgn_parms(creator, instance, 'variationtypeoptionimage')
     
-
-
-@receiver(post_save, sender=VariationType)
-def assign_variation_type_permissions(sender, instance, created, **kwargs):
-    if not created:
-        return
-
-    creator = instance.product.created_by
-    if creator:
-        assign_perm("products.change_variationtype", creator, instance)
-        assign_perm("products.delete_variationtype", creator, instance)
-        assign_perm("products.view_variationtype", creator, instance)
-
-    
-
-
-@receiver(post_save, sender=VariationTypeOption)
-def assign_variation_type_option_permissions(sender, instance, created, **kwargs):
-    if not created:
-        return
-
-    creator = instance.variation_type.product.created_by
-    if creator:
-        assign_perm("products.change_variationtypeoption", creator, instance)
-        assign_perm("products.delete_variationtypeoption", creator, instance)
-        assign_perm("products.view_variationtypeoption", creator, instance)
-
-    
-
-
-@receiver(post_save, sender=VariationTypeOptionImage)
-def assign_variation_type_option_image_permissions(sender, instance, created, **kwargs):
-    if not created:
-        return
-
-    creator = instance.variation_type_option.variation_type.product.created_by
-    if creator:
-        assign_perm(
-            "products.change_variationtypeoptionimage", creator, instance
-        )
-        assign_perm(
-            "products.delete_variationtypeoptionimage", creator, instance
-        )
-        assign_perm(
-            "products.view_variationtypeoptionimage", creator, instance
-        )
-
-    
+    @staticmethod
+    def assgn_parms(user, instance, model_name):
+        for perm in ProductsPermissionServices.PERMS:
+            assign_perm(f"products.{perm}_{model_name}", user, instance)

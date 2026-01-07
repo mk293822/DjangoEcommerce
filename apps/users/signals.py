@@ -1,13 +1,13 @@
-from genericpath import isfile
 from django.apps import apps
 from django.dispatch import receiver
-from django.db.models.signals import post_migrate, pre_delete
+from django.db.models.signals import post_migrate, pre_delete, pre_save
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-import os
+from apps.core.services.services import delete_file_from_media
 from apps.users.models import User
 from .constants import *
 from django.db import transaction
+from apps.core.services import delete_file_from_media
 
 @receiver(post_migrate)
 def create_roles_and_permissions(sender, **kwargs):
@@ -82,7 +82,18 @@ def create_roles_and_permissions(sender, **kwargs):
         print("Roles and permissions created successfully")
 
 @receiver(pre_delete, sender=User)
-def delete_user_avatar(sender, instance, **kwargs):
-    if instance.avatar:
-        if os.path.isfile(instance.avatar.path):
-            os.remove(instance.avatar.path)
+def delete_avatar_on_user_delete(sender, instance, **kwargs):
+    delete_file_from_media(instance.avatar)
+
+@receiver(pre_save, sender=User)
+def remove_avatar_if_cleared(sender, instance: User, **kwargs):
+    if not instance.pk:
+        return
+    
+    try:
+        old_user = User.objects.get(pk=instance.pk)
+    except User.DoesNotExist:
+        return
+    
+    if old_user.avatar and not instance.avatar:
+        delete_file_from_media(old_user.avatar)

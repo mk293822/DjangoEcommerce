@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from apps.products.admin.base import ModelAdmin
 from apps.products.forms import ProductVariationForm
 from apps.products.models.variation_type import VariationTypeOption
-from apps.products.models import Category
+from apps.departments.models import Category
 from apps.products.models.product import ProductVariation, Product
 from apps.products.services.slug_service import SlugService
 
