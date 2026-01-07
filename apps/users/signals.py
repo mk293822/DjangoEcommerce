@@ -6,11 +6,11 @@ from django.contrib.contenttypes.models import ContentType
 from apps.users.models import User
 from .constants import *
 from django.db import transaction
-from apps.core.services import delete_file_from_media
+from apps.core.services.file_services import FileServices
 
 @receiver(post_migrate)
 def create_roles_and_permissions(sender, **kwargs):
-    with transaction.actomic():
+    with transaction.atomic():
         if sender.label != "users":
             return
 
@@ -82,7 +82,7 @@ def create_roles_and_permissions(sender, **kwargs):
 
 @receiver(pre_delete, sender=User)
 def delete_avatar_on_user_delete(sender, instance, **kwargs):
-    delete_file_from_media(instance.avatar)
+    FileServices.delete_file_from_media(instance.avatar)
 
 @receiver(pre_save, sender=User)
 def remove_avatar_if_cleared(sender, instance: User, **kwargs):
@@ -95,4 +95,4 @@ def remove_avatar_if_cleared(sender, instance: User, **kwargs):
         return
     
     if old_user.avatar and not instance.avatar:
-        delete_file_from_media(old_user.avatar)
+        FileServices.delete_file_from_media(old_user.avatar)

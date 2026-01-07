@@ -1,8 +1,12 @@
 from django.db import models
 from uuid import uuid4
 from django.conf import settings
+from apps.core.services.file_services import FileServices
 from apps.departments.models import Department, Category
 from django.db.models import Q
+
+def image_upload_to(instance, filename):
+    return FileServices.generate_file_path(instance, filename, 'product_images')
 
 class ProductQuerySet(models.QuerySet):
     def active(self):
@@ -39,7 +43,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(null=True, blank=True)
     status = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image = models.ImageField(upload_to=image_upload_to, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
@@ -56,7 +60,8 @@ class Product(models.Model):
         
 
 class ProductVariation(models.Model):
-    """A concrete product variation linking a Product to a VariationTypeOption.
+    """
+    A concrete product variation linking a Product to a VariationTypeOption.
 
     Holds variation-specific price and stock information.
     """

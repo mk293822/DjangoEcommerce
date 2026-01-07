@@ -8,7 +8,7 @@ class CategoryInline(admin.TabularInline):
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', 'status', 'meta_title', 'numbers_of_categories')
-    exclude = ('slug',)
+    prepopulated_fields = {'slug': ('name',)}
     inlines = [CategoryInline]
     search_fields = ('name', 'slug')
     sortable_by = ('name', 'slug', 'status', 'numbers_of_categories')

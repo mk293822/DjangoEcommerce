@@ -1,5 +1,5 @@
-from .services import delete_file_from_media
+from .file_services import FileServices
 
 __all__ = [
-    "delete_file_from_media"
+    "FileServices"
 ]

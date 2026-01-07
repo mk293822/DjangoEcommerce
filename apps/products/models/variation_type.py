@@ -1,7 +1,17 @@
     
+import uuid
 from django.db import models
+import os
 from .product import Product
 from django.db import transaction
+
+def image_upload_to(instance, filename):
+    type_instance = instance.variation_type_option.variation_type
+    ext = filename.split('.')[-1]
+        
+    return os.path.join(f"product_images/{type_instance.product.id}/variations/type{type_instance.id}/option{instance.variation_type_option.id}/", str(uuid.uuid4())[:8],f"original.{ext}")
+    
+
 
 class VariationType(models.Model):
     """Defines a type of variation for a Product (e.g., Size, Color).
@@ -44,8 +54,8 @@ class VariationTypeOptionImage(models.Model):
     Images are uploaded to 'product_images/' and can be ordered for presentation.
     """
     id = models.AutoField(primary_key=True)
-    variation_type_option = models.ForeignKey(VariationTypeOption, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='product_images/variations/')
+    variation_type_option = models.ForeignKey(VariationTypeOption, on_delete=models.CASCADE, related_name='images', max_length=500)
+    image = models.ImageField(upload_to=image_upload_to)
     alt_text = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     order = models.PositiveIntegerField(null=True, blank=True)
