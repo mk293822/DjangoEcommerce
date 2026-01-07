@@ -87,3 +87,8 @@ class ProductVariation(models.Model):
             ))
             
         return " - ".join([str(option) for option in options])
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['variation_type_option', 'product'], name='unique_product_variation')
+        ]

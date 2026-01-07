@@ -5,6 +5,22 @@ from django.db import transaction
 
 
 class ProductVariationServices:
+    
+    @staticmethod
+    def on_delete(variation):
+        variations = variation.product.variations.exclude(id=variation.id)
+        product_stock = variation.product.stock
+        base_qty = product_stock // variations.count()
+        remainder = product_stock % variations.count()
+        
+        if variations.count() == 0:
+            return
+        
+        for i, vr in enumerate(variations):
+            vr.stock = base_qty + (1 if i < remainder else 0)
+            vr.save(update_fields=['stock'])
+        
+        
 
     @staticmethod 
     def on_create_option(product_id):
@@ -70,9 +86,10 @@ class ProductVariationServices:
             
             total_stock = product.stock
             n = remaining_variations.count()
-            if n > 0:
-                base_qty = total_stock // n
-                remainder = total_stock % n
-                for idx, var in enumerate(remaining_variations):
-                    var.stock = base_qty + (1 if idx < remainder else 0)
-                    var.save(update_fields=["stock"])
+            if n == 0:
+                return
+            base_qty = total_stock // n
+            remainder = total_stock % n
+            for idx, var in enumerate(remaining_variations):
+                var.stock = base_qty + (1 if idx < remainder else 0)
+                var.save(update_fields=["stock"])
