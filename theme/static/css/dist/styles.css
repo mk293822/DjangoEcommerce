@@ -405,14 +405,14 @@
   .w-40 {
     width: calc(var(--spacing) * 40);
   }
-  .w-72 {
-    width: calc(var(--spacing) * 72);
-  }
   .w-96 {
     width: calc(var(--spacing) * 96);
   }
   .w-\[50px\] {
     width: 50px;
+  }
+  .w-auto {
+    width: auto;
   }
   .w-full {
     width: 100%;

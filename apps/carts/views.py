@@ -20,9 +20,6 @@ def add_to_cart(request):
             cart, _ = Cart.objects.get_or_create(user=request.user)
             pr_variation = ProductVariation.objects.filter(product=product).first()
             
-            if product_variation:
-                pr_variation = ProductVariation.objects.get(id=product_variation)
-            
             cart_item_dict = cart.add_product(product, variation=pr_variation)
             cart_item = CartItem.objects.get(id=cart_item_dict['id'])
             cart_item_count = cart.total_items()

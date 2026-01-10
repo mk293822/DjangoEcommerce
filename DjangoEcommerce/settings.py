@@ -48,6 +48,20 @@ INSTALLED_APPS = [
     'apps.carts.apps.CartsConfig'
 ]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",  # DEBUG / INFO / WARNING
+    },
+}
+
 TAILWIND_APP_NAME = "theme"
 
 AUTH_USER_MODEL = 'users.User'

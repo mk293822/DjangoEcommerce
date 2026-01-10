@@ -10,7 +10,7 @@
                     <b class="block mb-2">{{vrt_name}}</b>
                     <div class="flex gap-2">
                         {% for id, img in options.items %}
-                            <button data-image-id="{{id}}" data-image-type="{{vrt_name}}" class="variation-image-btn border-2 rounded cursor-pointer transition-transform duration-200 ease-out hover:scale-110">
+                            <button data-image-id="{{id}}" data-image-type="{{vrt_name}}" class="disabled:cursor-not-allowed variation-image-btn border-2 rounded cursor-pointer transition-transform duration-200 ease-out hover:scale-110">
                                 <img src="{{img.image}}" class="w-12 h-12" alt="{{product.name}} {{img.name}}" />
                             </button>
                         {% endfor %}

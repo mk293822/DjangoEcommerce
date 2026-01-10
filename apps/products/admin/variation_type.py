@@ -15,7 +15,6 @@ class VariationTypeOptionInline(NestedAdminInline):
     model = VariationTypeOption
     extra = 0
     inlines = [VariationTypeOptionImageInline]
-    
 
 @admin.register(VariationType)
 class VariationTypeAdmin(NestedAdmin):
@@ -50,5 +49,10 @@ class VariationTypeAdmin(NestedAdmin):
         if not hasattr(request, "_variation_created"):
             ProductVariationServices.on_create_option(form.instance.product.id)
             request._variation_created = True
+            
+    def delete_formset(self, request, formset, queryset):
+        for obj in queryset:
+            ProductVariationServices.on_delete_option(obj)
+        super().delete_formset(request, formset, queryset)
 
         

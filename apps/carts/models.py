@@ -44,16 +44,9 @@ class Cart(models.Model):
                 defaults={"quantity": 1}
             )
             
-            if variation is not None:
-                variation.stock = F('stock') - 1
-                variation.save(update_fields=['stock'])
-            
             if not created:
                 cart_item.quantity = F('quantity') + 1
                 cart_item.save(update_fields=['quantity'])
-            
-            product.stock = F('stock') - 1
-            product.save(update_fields=['stock'])
             
         return model_to_dict(cart_item)
 

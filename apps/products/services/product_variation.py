@@ -7,20 +7,17 @@ from django.db import transaction
 class ProductVariationServices:
     
     @staticmethod
-    def on_delete(variation):
-        variations = variation.product.variations.exclude(id=variation.id)
-        product_stock = variation.product.stock
+    def recalculate_product_variation_stock(product_id):
+        variations = ProductVariation.objects.filter(product=product_id)
+        if not variations.exists():
+            return
+        product_stock = variations.first().product.stock
         base_qty = product_stock // variations.count()
         remainder = product_stock % variations.count()
-        
-        if variations.count() == 0:
-            return
         
         for i, vr in enumerate(variations):
             vr.stock = base_qty + (1 if i < remainder else 0)
             vr.save(update_fields=['stock'])
-        
-        
 
     @staticmethod 
     def on_create_option(product_id):

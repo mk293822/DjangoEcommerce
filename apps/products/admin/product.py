@@ -1,3 +1,4 @@
+import logging
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
@@ -7,6 +8,8 @@ from apps.products.models.variation_type import VariationTypeOption
 from apps.departments.models import Category
 from apps.products.models.product import ProductVariation, Product
 from apps.core.services.slug_service import SlugService
+from apps.products.services.product_variation import ProductVariationServices
+from django.db import transaction
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ModelAdmin):
@@ -32,7 +35,20 @@ class ProductVariationAdmin(ModelAdmin):
                 super().__init__(*args, **kwargs)
                 
         return FormWithRequest
-                
+    
+    def delete_model(self, request, obj):
+        with transaction.atomic():
+            product_id = obj.product_id
+            obj.delete()
+            ProductVariationServices.recalculate_product_variation_stock(product_id)
+    
+    def delete_queryset(self, request, queryset):
+        with transaction.atomic():
+            product_ids = set(queryset.values_list('product_id', flat=True))
+            queryset.delete()
+
+            for product_id in product_ids:
+                ProductVariationServices.recalculate_product_variation_stock(product_id)
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
@@ -67,7 +83,10 @@ class ProductAdmin(ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not change:
             obj.created_by = request.user
+            
         
         SlugService.assign_slug_to_model(obj)
-        return super().save_model(request, obj, form, change)
+        super().save_model(request, obj, form, change)
+        if change and obj.variations.exists():
+            ProductVariationServices.recalculate_product_variation_stock(obj.id)
         

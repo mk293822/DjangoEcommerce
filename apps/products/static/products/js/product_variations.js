@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	 * 2. DOM ELEMENTS
 	 * =============================== */
 	const carouselWrapper = document.querySelector("#carousel-container");
+	const productQuantity = document.querySelector("#product-quantity");
+	const productPrice = document.querySelector("#product-price");
 	const imageVariationButtons = document.querySelectorAll(
 		".variation-image-btn"
 	);
@@ -133,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
 							b.classList.remove("border-fuchsia-700")
 						);
 						btn.classList.add("border-fuchsia-700");
-
+						updatePriceAndQuantity();
 						updateVariationAvailability();
 					});
 			}, 300);
@@ -162,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				"",
 				`${currentPath}?${urlParams.toString()}`
 			);
-
+			updatePriceAndQuantity();
 			updateVariationAvailability();
 		});
 	});
@@ -186,13 +188,39 @@ document.addEventListener("DOMContentLoaded", () => {
 				"",
 				`${currentPath}?${urlParams.toString()}`
 			);
-
+			updatePriceAndQuantity();
 			updateVariationAvailability();
 		});
 	});
 
 	/* ===============================
-	 * 8. INITIAL STATE
+	 * 8. SET QUANTITY AND PRICE
 	 * =============================== */
+	function updatePriceAndQuantity() {
+		const selectedProductVariation = Object.values(productVariationMap).find(
+			(variation) =>
+				normalizeCombination(variation.variation_type_options) ===
+				normalizeCombination(
+					Object.values(selectedVariationOptions).map(Number)
+				)
+		);
+
+		productPrice.innerHTML = `$${selectedProductVariation.price}`;
+		const end = Math.min(selectedProductVariation.stock, 10);
+		productQuantity.innerHTML = "";
+
+		for (let i = 1; i < end + 1; i++) {
+			const option = document.createElement("option");
+			option.value = i;
+			option.text = `Quantity: ${i}`;
+			option.classList.add("bg-slate-700");
+			productQuantity.add(option);
+		}
+	}
+
+	/* ===============================
+	 * 9. INITIAL STATE
+	 * =============================== */
+	updatePriceAndQuantity();
 	updateVariationAvailability();
 });

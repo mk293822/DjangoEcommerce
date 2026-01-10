@@ -5,14 +5,14 @@ from apps.products.models.variation_type import VariationTypeOption
 class ProductServices:
     
     @staticmethod
-    def get_selected_options(request, variation_types, product_variations=None, context=True):
+    def get_selected_options(request, variation_types, product_variation=None, context=True):
 
         selected_options = {}
 
         use_variation_defaults = all(request.GET.get(vr_type.name) is None for vr_type in variation_types)
 
-        if use_variation_defaults and product_variations:
-            first_variation = product_variations.first()
+        if use_variation_defaults and product_variation:
+            first_variation = product_variation.first()
             option_ids = first_variation.variation_type_option
 
             for vr_type, option_id in zip(variation_types, option_ids):

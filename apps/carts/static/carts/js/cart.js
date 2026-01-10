@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
 	// Select all add-to-cart buttons
 	const buttons = document.querySelectorAll(".add-to-cart");
-	const productList = document.querySelector("#productList");
-	const csrfToken = productList.dataset.csrf;
-	const loginUrl = decodeURIComponent(productList.dataset.loginUrl);
-	const isAuthenticated = productList.dataset.auth;
-	const cartUrl = decodeURIComponent(productList.dataset.cartUrl);
+	const dataContainer = document.querySelector("#data-container");
+	const loginUrl = decodeURIComponent(dataContainer.dataset.loginUrl);
+	const isAuthenticated = dataContainer.dataset.auth;
+	const cartUrl = decodeURIComponent(dataContainer.dataset.cartUrl);
 
 	document.addEventListener("click", (e) => {
 		if (e.target.closest(".add-to-cart")) {
@@ -17,7 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	buttons.forEach((button) => {
 		button.addEventListener("click", function (e) {
 			e.preventDefault();
-			const productId = this.dataset.productId; // this must exist
+			const productId = this.dataset.productId;
+			const csrfToken = this.dataset.csrf;
 
 			if (!productId) {
 				console.error("Button has no product ID!", this);
