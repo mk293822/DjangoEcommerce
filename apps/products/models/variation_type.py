@@ -32,6 +32,11 @@ class VariationType(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'product'], name='unique_variation_type_name')
+        ]
 
 
 class VariationTypeOption(models.Model):
@@ -47,6 +52,10 @@ class VariationTypeOption(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'variation_type'], name='unique_variation_type_option_name')
+        ]
 
 class VariationTypeOptionImage(models.Model):
     """An image belonging to a Product Variation Type Options, with optional alt text and display order.
@@ -82,11 +91,5 @@ class VariationTypeOptionImage(models.Model):
 
         super().save(*args, **kwargs)
 
-
-    class Meta:
-        ordering = ['order']
-        constraints = [
-            models.UniqueConstraint(fields=['variation_type_option', 'order'], name='unique_variation_option_image_order')
-        ]
         
     

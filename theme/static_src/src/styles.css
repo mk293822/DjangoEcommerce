@@ -8,3 +8,14 @@
   * the scope of this path.
   */
 @source "../../../**/*.{html,py,js}";
+
+.radio-btn:disabled + label {
+	opacity: 0.5; /* visually faded */
+	cursor: not-allowed; /* show forbidden cursor */
+}
+
+/* Optional: style the label border/background */
+.radio-btn:disabled + label {
+	background-color: #2d2d2d; /* dark gray if needed */
+	border-color: #555;
+}

@@ -6,7 +6,7 @@ from apps.products.forms import ProductVariationForm
 from apps.products.models.variation_type import VariationTypeOption
 from apps.departments.models import Category
 from apps.products.models.product import ProductVariation, Product
-from apps.products.services.slug_service import SlugService
+from apps.core.services.slug_service import SlugService
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ModelAdmin):

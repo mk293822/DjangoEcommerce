@@ -1,0 +1,24 @@
+
+<div id="product-carousel" class="flex gap-6">
+  <!-- Thumbnails -->
+  <div class="flex flex-col items-center gap-2 py-2">
+    {% for image in carousel_images %}
+        <button data-image="{{image.large}}" class="{% if carousel_images.0.large == image.large %}border-fuchsia-700{% endif %} carousel-btns border-2 rounded cursor-pointer transition-transform duration-200 ease-out hover:scale-110">
+            <img src="{{image.thumb}}" class="w-[50px] h-[50px]" alt="{{product.name}}" />
+        </button>
+    {% endfor %}
+  </div>
+
+  <!-- Main image -->
+  <div class="w-full rounded-box">
+    <div class="w-full justify-center">
+      <img
+        id="carousel-img"
+        src="{{carousel_images.0.large}}"
+        class="w-full h-120 object-contain rounded-box"
+        alt="{{product.name}}"
+      />
+    </div>
+  </div>
+</div>
+

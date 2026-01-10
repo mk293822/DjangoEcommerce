@@ -1,5 +1,6 @@
 {% extends "layouts/authenticated_layout.html" %} 
 
+{% load static %}
 {% load currency_filters %}
 {% block authenticated_page %}
 
@@ -45,30 +46,16 @@
 		/>
 	</header>
 	<!-- Container -->
-	<div class="container mx-auto p-8">
+	<div class="mx-auto mt-12">
 		<div class="grid gap-8 grid-cols-1 lg:grid-cols-12">
 			<!-- Carousel / Images -->
-			<div class="col-span-6">
-				<div class="carousel w-full h-96 rounded-2xl overflow-hidden">
-					<!-- Replace with real images -->
-					<div class="carousel-item w-full">
-						<img
-							src="{{ product.imgae.url }}"
-							class="w-full h-full object-cover"
-						/>
-					</div>
-					<div class="carousel-item w-full">
-						<img
-							src="IMAGE_URL_2"
-							class="w-full h-full object-cover"
-						/>
-					</div>
-				</div>
+			<div id="carousel-container" class="col-span-6">
+				{% include './components/carousel.html' %}
 			</div>
 
 			<!-- Product Info -->
 			<div class="col-span-6">
-				<h1 class="text-3xl font-bold mb-2">Product Title Here</h1>
+				<h1 class="text-3xl font-bold mb-2">{{product.name}}</h1>
 
 				<!-- Vendor & Department -->
 				<p class="mb-8 text-sm text-gray-500">
@@ -76,84 +63,54 @@
 					<a
 						href="#"
 						class="hover:underline text-indigo-600"
-						>{{prodcut.created_by.name}}</a
-					>
-					&nbsp; in
+						>{{created_by}}</a
+					> in
 					<a
-						href="#"
+						href="{% url 'home' %}?department={{product.department.id}}"
 						class="hover:underline text-indigo-600"
-						>{{product.department.name}}</a
+						>{{product.department.name}} Department</a
 					>
 				</p>
 
 				<!-- Price -->
-				<div class="text-3xl font-semibold text-indigo-600 mb-4">$123.45</div>
+				<div id="product-price" class="text-3xl font-semibold text-indigo-600 mb-4"></div>
 
 				<!-- Variation Types -->
-				<div class="mb-6">
-					<!-- Image variation example -->
-					<div class="mb-4">
-						<b class="block mb-2">Color</b>
-						<div class="flex gap-2">
-							<img
-								src="COLOR1_THUMB"
-								class="w-12 h-12 rounded cursor-pointer border-2 border-indigo-600"
-							/>
-							<img
-								src="COLOR2_THUMB"
-								class="w-12 h-12 rounded cursor-pointer border-2 border-transparent hover:border-indigo-400"
-							/>
-						</div>
-					</div>
-
-					<!-- Radio variation example -->
-					<div class="mb-4">
-						<b class="block mb-2">Size</b>
-						<div class="flex gap-2">
-							<input
-								type="radio"
-								name="size"
-								class="btn btn-outline"
-								checked
-							/>
-							S
-							<input
-								type="radio"
-								name="size"
-								class="btn btn-outline"
-							/>
-							M
-							<input
-								type="radio"
-								name="size"
-								class="btn btn-outline"
-							/>
-							L
-						</div>
-					</div>
-				</div>
-
+				{% include "products/components/product_variations.html" %}
 				<!-- Low stock warning -->
+				{% if product.stock < 11 %}
 				<div class="text-error mb-4">Only {{product.stock}} left</div>
+				{% endif %}
 
 				<!-- Quantity & Add to Cart -->
 				<div class="flex gap-4 mb-8">
-					<select class="select select-bordered w-full">
-						{% for i in "0"|add:product.stock|make_list %}
-                            <option class="bg-slate-700" value="{{ forloop.counter }}">Quantity: {{ forloop.counter }}</option>
+					<select 
+					    id="product-quantity"
+					    name="quantity"
+                    	class="w-full border border-gray-400 rounded-md bg-slate-700 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-600 focus:border-fuchsia-600"
+					>
+						{% for i in product.stock|quantity %}
+                            <option class="bg-slate-700" value="{{ i }}">Quantity: {{ i }}</option>
                         {% endfor %}
 					</select>
-					<button class="btn btn-primary w-40">Add To Cart</button>
+					<button
+						class="w-40 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
+					>
+						Add To Cart
+					</button>
+
 				</div>
 
 				<!-- About this item -->
 				<b class="text-xl block mb-2">About this Item</b>
-				<div class="wysiwyg-output text-gray-400">
+				<div class="text-gray-400">
 					{{product.description}}
 				</div>
 			</div>
 		</div>
 	</div>
+<script src="{% static 'products/js/carousel.js' %}" defer></script>
+
 </div>
 
 {% endblock %}

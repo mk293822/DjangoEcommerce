@@ -5,53 +5,56 @@
   <div class="mx-auto px-8">
     <div class="flex h-auto items-center justify-between">
       <!-- Logo -->
-      <div class="flex items-center gap-2">
+      <a href="{% url 'home' %}" class="flex items-center gap-2 cursor-pointer">
         <img src="https://flowbite.com/docs/images/logo.svg" class="h-7 w-7" />
         <span
           class="text-base font-semibold tracking-wide text-slate-900 dark:text-slate-100"
         >
           Ecommerce
         </span>
-      </div>
+      </a>
 
       <!-- Right side -->
       <div class="flex items-center gap-3 overflow-visible py-2">
         <!-- Search (desktop) -->
-        <div class="hidden md:block">
-          <div class="relative w-96">
-            <span
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            >
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="7"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <line
-                  x1="20"
-                  y1="20"
-                  x2="16.65"
-                  y2="16.65"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </span>
+        {% if request.resolver_match.url_name == 'home' %}
 
-            <input
-              value="{{query}}"
-              type="search"
-              name="q"
-              data-search-input
-              placeholder="Search products..."
-              class="w-full h-9 pl-9 pr-4 text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
-            />
+          <div class="hidden md:block">
+            <div class="relative w-96">
+              <span
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="20"
+                    y1="20"
+                    x2="16.65"
+                    y2="16.65"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </span>
+
+              <input
+                value="{{query}}"
+                type="search"
+                name="q"
+                data-search-input
+                placeholder="Search products..."
+                class="w-full h-9 pl-9 pr-4 text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
+              />
+            </div>
           </div>
-        </div>
+        {% endif %}
 
         {% if request.user.is_authenticated %}
 

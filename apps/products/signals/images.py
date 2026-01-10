@@ -26,7 +26,7 @@ class ImageSignals:
             
     @staticmethod
     @receiver(post_save, sender=VariationTypeOptionImage)
-    def create_image_sizes_product(sender, instance, **kwargs):
+    def create_image_sizes_variation_type_option(sender, instance, **kwargs):
         if not instance.image:
             return
         
@@ -41,7 +41,7 @@ class ImageSignals:
     
     @staticmethod
     @receiver(pre_save, sender=Product)
-    def remove_image_if_cleared(sender, instance, **kwargs):
+    def remove_image_if_cleared_product(sender, instance, **kwargs):
         if not instance.pk:
             return
         

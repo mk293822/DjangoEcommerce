@@ -1,0 +1,55 @@
+{% load static %}
+
+<div class="mb-6" id="variation-container" data-product-variations="{{product_variations}}" data-selected-options="{{selected_options}}">
+	{% for vrt in variation_types %}
+    <!-- Image variation example -->
+        {% if vrt.type == 'image'%}
+
+            {% for vrt_name, options in variation_type_option_images.items %}
+                <div class="mb-4">
+                    <b class="block mb-2">{{vrt_name}}</b>
+                    <div class="flex gap-2">
+                        {% for id, img in options.items %}
+                            <button data-image-id="{{id}}" data-image-type="{{vrt_name}}" class="variation-image-btn border-2 rounded cursor-pointer transition-transform duration-200 ease-out hover:scale-110">
+                                <img src="{{img.image}}" class="w-12 h-12" alt="{{product.name}} {{img.name}}" />
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% elif vrt.type == "radio" %}
+
+            <!-- Radio variation example -->
+            <div class="mb-4">
+                <b class="block mb-2">{{vrt.name}}</b>
+                <div class="flex gap-2">
+                    {% for option in vrt.options.all %}
+                        <input
+                            data-option-id="{{option.id}}"
+                            type="radio"
+                            name="{{vrt.name}}"
+                            class="radio-btn disabled:cursor-not-allowed disabled:opacity-40"
+                        />
+                        <p>{{option.name}}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="mb-4">
+                <p class="block mb-2">{{vrt.name}}</p>
+                <select
+                    data-option-type="{{vrt.name}}"
+                    class="variation-select w-full border border-gray-400 rounded-md bg-slate-700 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-600 focus:border-fuchsia-600"
+                >
+                    {% for option in vrt.options.all %}
+                        <option value="{{ option.id }}">{{ option.name }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <script src="{% static 'products/js/product_variations.js' %}" defer></script>
+</div>
