@@ -46,7 +46,7 @@ def product_list(request):
     context.update(CartServices.get_cart_context(request.user))        
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        return render(request, "products/components/products_list.html", {"products": products})
+        return render(request, "products/components/products_list.html", {"products_context": products_context})
     
     return render(request, 'products/home.html', context)
 
