@@ -1,30 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
-	const profileDropdown = document.getElementById("profile-dropdown");
-	const profileButton = document.getElementById("profile-button");
+	const setupDropdown = (buttonId, dropdownId) => {
+		const button = document.querySelector(`#${buttonId}`);
+		const dropdown = document.querySelector(`#${dropdownId}`);
 
-	if (profileButton && profileDropdown) {
-		profileButton.addEventListener("click", () => {
-			const isOpen = profileDropdown.classList.contains("opacity-100");
+		// Toggle dropdown when clicking the button
+		button.addEventListener("click", (e) => {
+			e.stopPropagation();
 
-			profileDropdown.classList.toggle("opacity-100", !isOpen);
-			profileDropdown.classList.toggle("opacity-0", isOpen);
-			profileDropdown.classList.toggle("pointer-events-none", isOpen);
+			// Close all other dropdowns
+			document.querySelectorAll(".dropdown").forEach((dd) => {
+				if (dd !== dropdown) {
+					dd.classList.remove("opacity-100");
+					dd.classList.add("opacity-0", "pointer-events-none");
+				}
+			});
+
+			const isOpen = dropdown.classList.contains("opacity-100");
+
+			dropdown.classList.toggle("opacity-100", !isOpen);
+			dropdown.classList.toggle("opacity-0", isOpen);
+			dropdown.classList.toggle("pointer-events-none", isOpen);
 		});
 
+		// Close dropdown when clicking outside
 		document.addEventListener("click", (e) => {
-			if (
-				!profileButton.contains(e.target) &&
-				!profileDropdown.contains(e.target)
-			) {
-				profileDropdown.classList.remove("opacity-100");
-				profileDropdown.classList.add("opacity-0", "pointer-events-none");
+			if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+				dropdown.classList.remove("opacity-100");
+				dropdown.classList.add("opacity-0", "pointer-events-none");
 			}
 		});
-	}
+	};
+
+	// Setup both dropdowns
+	setupDropdown("profile-button", "profile-dropdown");
+	setupDropdown("cart-button", "cart-dropdown");
 
 	// 🔍 Search
 	const searchInput = document.querySelector("[data-search-input]");
-	const productList = document.querySelector("#product-list");
+	const productList = document.querySelector("#productList");
 
 	let debounceTimer;
 
@@ -50,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						productList.innerHTML = html;
 					});
 
-				history.replaceState(null, "", newUrl);
+				history.replaceState(null, "", url);
 			}, 300); // 300ms debounce
 		});
 	}
