@@ -22,9 +22,11 @@ document.addEventListener("DOMContentLoaded", function () {
 			const productId = this.dataset.productId;
 			const csrfToken = this.dataset.csrf;
 			const urlParams = new URLSearchParams(window.location.search);
-			const selectedOptions = [...urlParams.values()].length
-				? [...urlParams.values()].map(Number)
-				: [];
+
+			const selectedOptions =
+				[...urlParams.values()].map(Number) == [NaN]
+					? [...urlParams.values()].map(Number)
+					: null;
 
 			if (!productId) {
 				console.error("Button has no product ID!", this);

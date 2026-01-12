@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.departments.apps.DepartmentsConfig',
     'apps.products.apps.ProductsConfig',
-    'apps.carts.apps.CartsConfig'
+    'apps.carts.apps.CartsConfig',
+    'apps.orders.apps.OrdersConfig',
 ]
 
 LOGGING = {

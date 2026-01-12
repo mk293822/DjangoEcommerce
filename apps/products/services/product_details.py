@@ -16,7 +16,7 @@ class ProductServices:
         variation = None,
         return_ids: bool = True,
         match_product_price: bool = True,
-        excluded_variation_ids = []
+        excluded_variation_ids = None
     ):
         selected_options = {}
         
@@ -32,11 +32,16 @@ class ProductServices:
             first_variation = variation
             if not first_variation:
                 product_variations_qs  = product_variations
+                if excluded_variation_ids is None:
+                    excluded_variation_ids = []
                 
                 if match_product_price:
                     product_variations_qs  = product_variations.filter(price=product.price)
                     
                 available_variations = product_variations_qs.exclude(id__in=excluded_variation_ids)
+                
+                if not available_variations.exists():
+                    return {}
 
                 first_variation = available_variations.first()
                     
@@ -50,7 +55,7 @@ class ProductServices:
         else:
             for vr_type in variation_types:
                 options_qs = vr_type.options.all()
-                if not options_qs:
+                if not options_qs.exists():
                     continue
 
                 req_id = selection_source.get(vr_type.name)
@@ -59,7 +64,7 @@ class ProductServices:
                     selected_options[vr_type.name] = selected_option
 
         
-        return ({k: v.id for k, v in selected_options.items()} if return_ids else selected_options)
+        return ({k: v.id for k, v in selected_options.items()} if return_ids and selected_options else selected_options)
 
     
     @staticmethod
