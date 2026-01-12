@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from uuid import uuid4
 from django.conf import settings
@@ -6,6 +7,7 @@ from apps.products.models.product import Product, ProductVariation
 from django.forms.models import model_to_dict
 from django.db import transaction
 from django.db.models import F
+
 
 class Cart(models.Model):
     """A user's shopping cart, linked to the user and containing multiple CartItems.
@@ -28,27 +30,25 @@ class Cart(models.Model):
         """Calculates the total price of all items in the cart."""
         return sum(item.total_price() for item in self.items.all())
     
-    def add_product(self, product, variation=None):
+    def add_product(self, product, quantity = 1, variation=None):
         """Adds a product to the cart, optionally with a specific variation.
 
         If the product (and variation) already exists in the cart, increments the quantity.
         """
-        if product.stock < 1:
-            raise ValidationError("Product is out of stock")
-        
+
         with transaction.atomic():
             cart_item, created = CartItem.objects.get_or_create(
                 cart=self, 
                 product=product,
                 variation=variation,
-                defaults={"quantity": 1}
+                defaults={"quantity": quantity}
             )
             
             if not created:
-                cart_item.quantity = F('quantity') + 1
+                cart_item.quantity = F('quantity') + quantity
                 cart_item.save(update_fields=['quantity'])
             
-        return model_to_dict(cart_item)
+        return {**model_to_dict(cart_item), 'created': created}
 
 
 class CartItem(models.Model):
@@ -76,3 +76,41 @@ class CartItem(models.Model):
         """Calculates the total price for this cart item based on quantity and product/variation price."""
         unit_price = self.variation.price if self.variation else self.product.price
         return unit_price * self.quantity
+    
+    def price(self):
+        if self.variation:
+            return self.variation.price
+        return self.product.price
+    
+
+    def image(self):
+        def make_thumb(url):
+            base_path = os.path.dirname(url)
+            _, ext = os.path.splitext(url)
+            return f"{base_path}/thumb{ext}"
+
+        if self.variation:
+            vr_type = (
+                self.product.variation_types
+                .filter(type='image')
+                .first()
+            )
+
+            if vr_type:
+                option = (
+                    vr_type.options
+                    .filter(id__in=self.variation.variation_type_option)
+                    .first()
+                )
+
+                if option:
+                    image_obj = option.images.first()
+                    if image_obj:
+                        return make_thumb(image_obj.image.url)
+
+        if self.product.image:
+            return make_thumb(self.product.image.url)
+
+        return None
+            
+            

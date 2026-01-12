@@ -88,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.core.context_processors.ui_settings'
             ],
         },
     },
@@ -164,3 +165,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CURRENCY_FORMAT = 'USD'
 CURRENCY_LOCALE = 'en_US'
 ANONYMOUS_USER_NAME = None
+TOAST_DURATION = 3000

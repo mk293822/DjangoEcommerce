@@ -13,7 +13,7 @@ from django.db import transaction
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ModelAdmin):
-    list_display = ('product', 'stock', 'price', 'variation_type_options')
+    list_display = ('id', 'product', 'stock', 'price', 'variation_type_options')
     form = ProductVariationForm
     model = ProductVariation
     search_fields = ('product__name',)

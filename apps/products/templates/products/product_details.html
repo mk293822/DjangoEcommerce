@@ -17,7 +17,7 @@
 		/>
 		<link
 			rel="canonical"
-			href="{% url 'show_product' product.slug %}"
+			href="{% url 'product_details' product.slug %}"
 		/>
 
 		<meta
@@ -34,7 +34,7 @@
 		/>
 		<meta
 			property="og:url"
-			content="{% url 'show_product' product.slug %}"
+			content="{% url 'product_details' product.slug %}"
 		/>
 		<meta
 			property="og:type"
@@ -73,12 +73,12 @@
 				</p>
 
 				<!-- Price -->
-				<div id="product-price" class="text-3xl font-semibold text-indigo-600 mb-4"></div>
+				<div id="product-price" class="text-3xl font-semibold text-indigo-600 mb-4">{{product.price|currency}}</div>
 
 				<!-- Variation Types -->
 				{% include "products/components/product_variations.html" %}
 				<!-- Low stock warning -->
-				{% if product.stock < 11 %}
+				{% if product.stock < 3 %}
 				<div class="text-error mb-4">Only {{product.stock}} left</div>
 				{% endif %}
 
@@ -89,12 +89,17 @@
 					    name="quantity"
                     	class="w-full border border-gray-400 rounded-md bg-slate-700 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-600 focus:border-fuchsia-600"
 					>
+						{% for i in quantity %}
+						    <option value="{{ i }}">Quantity: {{ i }}</option>
+						{% endfor %}
+
 					</select>
 					<button
 						type="button"
+						id="product-show-add-to-cart-btn"
 						data-csrf="{{ csrf_token }}"
 						data-product-id="{{ product.id }}"
-						class="add-to-cart w-40 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
+						class="add-to-cart disabled:opacity-40 disabled:cursor-not-allowed w-40 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
 					>
 						Add To Cart
 					</button>

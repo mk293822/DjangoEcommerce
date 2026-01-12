@@ -3,7 +3,7 @@
 <div
 	class="bg-white  dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
 >
-	<a href="{% url 'show_product' item.product.slug %}?{{item.options_query}}" class="cursor-pointer">
+	<a href="{% url 'product_details' item.product.slug %}?{{item.options_query}}" class="cursor-pointer">
 		<!-- Image -->
 	<div class="w-full h-48 bg-slate-200 dark:bg-slate-700 overflow-hidden">
 		{% if item.product.image %}

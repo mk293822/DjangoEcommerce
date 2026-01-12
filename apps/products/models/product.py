@@ -1,6 +1,7 @@
 from django.db import models
 from uuid import uuid4
 from django.conf import settings
+from requests import options
 from apps.core.services.file_services import FileServices
 from apps.departments.models import Department, Category
 from django.db.models import Q
@@ -57,7 +58,12 @@ class Product(models.Model):
         permissions = [
             ('sell_product', 'Can sell product'),
         ]
-        
+    
+    @property
+    def max_quantity(self):
+        return min(self.stock, 10)
+
+
 
 class ProductVariation(models.Model):
     """
@@ -74,20 +80,26 @@ class ProductVariation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.product.name
-    
+        return f"{self.product.name} (Variation #{self.pk})"
+
+    @property
     def variation_type_options(self):
+        options = self.get_options()
+        return " - ".join(option.name for option in options) if options else self.product.name
+
+    def get_options(self):
         variation_types = self.product.variation_types.all()
-        
+        option_ids = self.variation_type_option or []
+
         options = []
+        for vt, option_id in zip(variation_types, option_ids):
+            option = vt.options.filter(id=option_id).first()
+            if option:
+                options.append(option)
+
+        return options
+
         
-        for vt in variation_types:
-            options.extend(vt.options.filter(
-                id__in=self.variation_type_option
-            ))
-            
-        return " - ".join([str(option) for option in options])
-    
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['variation_type_option', 'product'], name='unique_product_variation')

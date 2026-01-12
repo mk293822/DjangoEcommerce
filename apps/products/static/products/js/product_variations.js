@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const currentPath = window.location.pathname;
-
+	const addToCartBtn = document.querySelector("#product-show-add-to-cart-btn");
 	/* ===============================
 	 * 3. PREPARE VARIATION MATRIX
 	 * =============================== */
@@ -197,24 +197,39 @@ document.addEventListener("DOMContentLoaded", () => {
 	 * 8. SET QUANTITY AND PRICE
 	 * =============================== */
 	function updatePriceAndQuantity() {
-		const selectedProductVariation = Object.values(productVariationMap).find(
-			(variation) =>
-				normalizeCombination(variation.variation_type_options) ===
-				normalizeCombination(
-					Object.values(selectedVariationOptions).map(Number)
-				)
-		);
+		if (selectedVariationOptions) {
+			const selectedProductVariation = Object.values(productVariationMap).find(
+				(variation) =>
+					normalizeCombination(variation.variation_type_options) ===
+					normalizeCombination(
+						Object.values(selectedVariationOptions).map(Number)
+					)
+			);
 
-		productPrice.innerHTML = `$${selectedProductVariation.price}`;
-		const end = Math.min(selectedProductVariation.stock, 10);
-		productQuantity.innerHTML = "";
+			productPrice.innerHTML = `$${selectedProductVariation?.price ?? 0}`;
+			const stock = selectedProductVariation?.stock ?? 0;
+			const end = Math.min(stock, 10);
+			const disabled = stock < 1;
 
-		for (let i = 1; i < end + 1; i++) {
-			const option = document.createElement("option");
-			option.value = i;
-			option.text = `Quantity: ${i}`;
-			option.classList.add("bg-slate-700");
-			productQuantity.add(option);
+			addToCartBtn.disabled = disabled;
+			productQuantity.innerHTML = "";
+
+			if (disabled) {
+				const option = document.createElement("option");
+				option.text = "Quantity: 0";
+				option.value = 0;
+				option.disabled = true;
+				productQuantity.add(option);
+				productQuantity.value = 0;
+			} else {
+				for (let i = 1; i <= end; i++) {
+					const option = document.createElement("option");
+					option.value = i;
+					option.text = `Quantity: ${i}`;
+					option.classList.add("bg-slate-700");
+					productQuantity.add(option);
+				}
+			}
 		}
 	}
 

@@ -1,27 +1,27 @@
 {% load currency_filters %}
 
 <a
-	id="cart-item-{{ item.id }}"
-	href="#"
+	id="cart-item-{{ item.cart_item.id }}"
+	href="{% url 'product_details' item.cart_item.product.slug %}?{{item.options_query}}"
 	class="flex gap-3 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition group"
 >
 	<div class="h-12 w-12 flex items-center justify-center shrink-0">
 		<img
-			src="{{ item.product.image.url }}"
-			alt="{{ item.product.name }}"
+			src="{{ item.cart_item.image }}"
+			alt="{{ item.cart_item.product.name }}"
 			class="max-h-full max-w-full rounded group-hover:scale-105 transition"
 		/>
 	</div>
 
 	<div class="flex-1 text-sm">
 		<p class="font-medium leading-tight mb-1 truncate">
-			{{ item.product.name }}
+			{{ item.cart_item.product.name }}
 		</p>
 		<div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
-			<p>{{item.variation.variation_type_options|safe}}</p>
+			<p>{{item.cart_item.variation.variation_type_options|safe}}</p>
 			<div class="flex justify-between items-center">
-				<span>{{ item.product.price|currency }} &nbsp;</span>
-				<p> x<span class="cartItemEachCount">{{ item.quantity }}</span></p>
+				<span>{{ item.cart_item.price|currency }} &nbsp;</span>
+				<p> x<span class="cartItemEachCount">{{ item.cart_item.quantity }}</span></p>
 			</div>
 		</div>
 	</div>
