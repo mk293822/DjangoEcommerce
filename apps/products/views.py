@@ -16,8 +16,11 @@ def product_list(request):
     department_id = request.GET.get('department', 'all')
     products = Product.objects.active()
     departments = Department.objects.filter(status=True)
-    cart, _ = Cart.objects.get_or_create(user=request.user) if request.user.is_authenticated else None
-    
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+    else:
+        cart = None
+
     if department_id != "all":
         products = products.filter(department_id=department_id)
         
