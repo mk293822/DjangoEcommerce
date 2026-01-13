@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'theme',
     'guardian',
     'nested_admin',
-    'django_ckeditor_5',
+    'ckeditor',
     'apps.users.apps.UsersConfig',
     'apps.departments.apps.DepartmentsConfig',
     'apps.products.apps.ProductsConfig',
@@ -54,7 +54,7 @@ CKEDITOR5_BASEPATH = '/static/ckeditor5/'
 
 
 # CKEditor configs
-CKEDITOR5_CONFIGS = {
+CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Full',
         'height': 300,

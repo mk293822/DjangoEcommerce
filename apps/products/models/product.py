@@ -5,7 +5,7 @@ from django.conf import settings
 from apps.core.services.file_services import FileServices
 from apps.departments.models import Department, Category
 from django.db.models import Q
-from django_ckeditor_5.fields import CKEditor5Field
+from ckeditor.fields import RichTextField
 
 
 def image_upload_to(instance, filename):
@@ -42,7 +42,7 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='products')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    full_description = CKEditor5Field(config_name='default')
+    full_description = RichTextField(config_name='default')
     short_description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(null=True, blank=True)
