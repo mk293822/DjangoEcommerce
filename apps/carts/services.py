@@ -1,3 +1,4 @@
+from collections import defaultdict
 from apps.products.services.product_details import ProductServices
 from .models import Cart, CartItem
 
@@ -21,3 +22,18 @@ class CartServices:
             "cart": cart,
             'cart_items': cart_items
         }
+        
+        
+    @staticmethod
+    def get_grouped_cart_items(user):
+        
+        cart, _ = Cart.objects.get_or_create(user=user)
+        items = CartItem.objects.filter(cart=cart)
+        
+        grouped_items = defaultdict(list)
+        
+        for item in items:
+            creator = item.product.created_by
+            grouped_items[creator].append(item)
+        
+        return dict(grouped_items)

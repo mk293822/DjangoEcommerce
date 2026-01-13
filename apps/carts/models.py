@@ -22,10 +22,12 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart for {self.user.name}"
     
+    @property
     def total_items(self):
         """Calculates the total number of items in the cart."""
         return sum(item.quantity for item in self.items.all())
     
+    @property
     def total_price(self):
         """Calculates the total price of all items in the cart."""
         return sum(item.total_price() for item in self.items.all())

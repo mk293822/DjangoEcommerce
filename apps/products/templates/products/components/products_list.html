@@ -5,7 +5,7 @@
     {% endfor %}
   </div>
 
-  {% if products_context.count < 1 %}
+  {% if products_context|length < 1 %}
   <div class="flex justify-center items-center pt-40">
     <p class="text-3xl font-extrabold text-slate-800 dark:text-slate-200">
       No Product Yet

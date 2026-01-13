@@ -1,6 +1,6 @@
 import json
 import logging
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from apps.products.models.product import ProductVariation, Product
@@ -8,8 +8,30 @@ from apps.products.services.product_details import ProductServices
 from .models import Cart, CartItem
 from django.template.loader import render_to_string
 from django.db import models
+from apps.carts.services import CartServices
 
 logger = logging.getLogger(__name__)
+
+
+
+
+# Create your views here.
+
+def carts(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    context = {
+        'cart_items': CartServices.get_grouped_cart_items(request.user),
+        'total_quantity': cart.total_items,
+        'total_price': cart.total_price
+    }
+    
+    return render(request, 'carts/carts.html', context)
+
+
 # Create your views here.
 @csrf_exempt
 def add_to_cart(request):
@@ -80,8 +102,8 @@ def add_to_cart(request):
 
         # Add to cart
         cart_item_dict = cart.add_product(product, variation=variation, quantity=quantity_to_add)
-        cart_item_count = cart.total_items()
-        cart_item_total_price = cart.total_price()
+        cart_item_count = cart.total_items
+        cart_item_total_price = cart.total_price
         cart_item = CartItem.objects.filter(id=cart_item_dict['id']).first()
         item = {
             "cart_item": cart_item,
