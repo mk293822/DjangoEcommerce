@@ -411,6 +411,15 @@
   .h-\[50px\] {
     height: 50px;
   }
+  .h-\[380px\] {
+    height: 380px;
+  }
+  .h-\[400px\] {
+    height: 400px;
+  }
+  .h-\[480px\] {
+    height: 480px;
+  }
   .h-auto {
     height: auto;
   }
@@ -1177,6 +1186,11 @@
   .sm\:hidden {
     @media (width >= 40rem) {
       display: none;
+    }
+  }
+  .sm\:h-\[480px\] {
+    @media (width >= 40rem) {
+      height: 480px;
     }
   }
   .sm\:w-40 {
