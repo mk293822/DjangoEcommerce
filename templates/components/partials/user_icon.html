@@ -1,9 +1,9 @@
 {% load initials %}
 {% if request.user.avatar %}
 <img
-	class="w-10 h-10 rounded-full object-cover"
-	alt="{{ request.user.name }}"
-	src="{{ request.user.avatar.url }}"
+  class="w-10 h-10 rounded-full object-cover"
+  alt="{{ request.user.name }}"
+  src="{{ request.user.avatar.url }}"
 />
 {% else %}
 <div class="avatar mx-auto">
@@ -13,5 +13,4 @@
     </span>
   </div>
 </div>
-
 {% endif %}

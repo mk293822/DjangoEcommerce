@@ -1,16 +1,13 @@
 {% if departments.count > 0 %}
-<div class="flex gap-4 px-8 py-2 overflow-x-auto border-t border-slate-200 dark:border-slate-700">
-  
+<div class="flex flex-wrap gap-4 px-4 sm:px-8 py-2 overflow-x-auto border-t border-slate-200 dark:border-slate-700">
   <!-- All link -->
-  <a href="?department=all"
-    class="text-sm font-medium whitespace-nowrap {% if selected_department == 'all' %}text-indigo-600 dark:text-indigo-400 underline{% else %}text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400{% endif %}">
+  <a href="?department=all" class="text-sm font-medium whitespace-nowrap {% if selected_department == 'all' %}text-indigo-600 dark:text-indigo-400 underline{% else %}text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400{% endif %}">
     All
   </a>
 
   <!-- Department links -->
   {% for department in departments %}
-    <a href="?department={{ department.id }}"
-      class="text-sm font-medium whitespace-nowrap {% if selected_department|default:'' == department.id|stringformat:'s' %}text-indigo-600 underline dark:text-indigo-400{% else %}text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400{% endif %}">
+    <a href="?department={{ department.id }}" class="text-sm font-medium whitespace-nowrap {% if selected_department|default:'' == department.id|stringformat:'s' %}text-indigo-600 underline dark:text-indigo-400{% else %}text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400{% endif %}">
       {{ department.name }}
     </a>
   {% endfor %}

@@ -5,116 +5,66 @@
 {% block authenticated_page %}
 
 <div>
-	<header>
-		<title>{product.title}</title>
-		<meta
-			name="title"
-			content="{{product.meta_title}}"
-		/>
-		<meta
-			name="description"
-			content="{{product.meta_description}}"
-		/>
-		<link
-			rel="canonical"
-			href="{% url 'product_details' product.slug %}"
-		/>
+  <header>
+    <title>{{product.title}}</title>
+    <meta name="title" content="{{product.meta_title}}"/>
+    <meta name="description" content="{{product.meta_description}}"/>
+    <link rel="canonical" href="{% url 'product_details' product.slug %}"/>
+    <meta property="og:title" content="{{product.meta_title}}"/>
+    <meta property="og:image" content="{{product.image.url}}"/>
+    <meta property="og:description" content="{{product.meta_description}}"/>
+    <meta property="og:url" content="{% url 'product_details' product.slug %}"/>
+    <meta property="og:type" content="product"/>
+    <meta property="og:site_name" content="Ecommerce"/>
+  </header>
 
-		<meta
-			property="og:title"
-			content="{{product.meta_title}}"
-		/>
-		<meta
-			property="og:image"
-			content="{{product.imgae.url}}"
-		/>
-		<meta
-			property="og:description"
-			content="{{product.meta_description}}"
-		/>
-		<meta
-			property="og:url"
-			content="{% url 'product_details' product.slug %}"
-		/>
-		<meta
-			property="og:type"
-			content="product"
-		/>
-		<meta
-			property="og:site_name"
-			content="Ecommerce"
-		/>
-	</header>
-	<!-- Container -->
-	<div class="mx-auto mt-12">
-		<div class="grid gap-8 grid-cols-1 lg:grid-cols-12">
-			<!-- Carousel / Images -->
-			<div id="carousel-container" class="col-span-6">
-				{% include './components/carousel.html' %}
-			</div>
+  <div class="mx-auto mt-12 px-4 sm:px-6 lg:px-8">
+    <div class="grid gap-8 grid-cols-1 lg:grid-cols-12">
+      <!-- Carousel / Images -->
+      <div id="carousel-container" class="col-span-12 lg:col-span-6">
+        {% include './components/carousel.html' %}
+      </div>
 
-			<!-- Product Info -->
-			<div class="col-span-6">
-				<h1 class="text-3xl font-bold mb-2">{{product.name}}</h1>
+      <!-- Product Info -->
+      <div class="col-span-12 lg:col-span-6">
+        <h1 class="text-3xl font-bold mb-2">{{product.name}}</h1>
 
-				<!-- Vendor & Department -->
-				<p class="mb-8 text-sm text-gray-500">
-					by
-					<a
-						href="#"
-						class="hover:underline text-indigo-600"
-						>{{created_by}}</a
-					> in
-					<a
-						href="{% url 'home' %}?department={{product.department.id}}"
-						class="hover:underline text-indigo-600"
-						>{{product.department.name}} Department</a
-					>
-				</p>
+        <p class="mb-4 text-sm text-gray-500">
+          by <a href="#" class="hover:underline text-indigo-600">{{created_by}}</a>
+          in <a href="{% url 'home' %}?department={{product.department.id}}" class="hover:underline text-indigo-600">{{product.department.name}} Department</a>
+        </p>
 
-				<!-- Price -->
-				<div id="product-price" class="text-3xl font-semibold text-indigo-600 mb-4">{{product.price|currency}}</div>
+        <div id="product-price" class="text-3xl font-semibold text-indigo-600 mb-4">{{product.price|currency}}</div>
 
-				<!-- Variation Types -->
-				{% include "products/components/product_variations.html" %}
-				<!-- Low stock warning -->
-				{% if product.stock < 3 %}
-				<div class="text-error mb-4">Only {{product.stock}} left</div>
-				{% endif %}
+        {% include "products/components/product_variations.html" %}
 
-				<!-- Quantity & Add to Cart -->
-				<div class="flex gap-4 mb-8">
-					<select 
-					    id="product-quantity"
-					    name="quantity"
-                    	class="w-full border border-gray-400 rounded-md bg-slate-700 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-600 focus:border-fuchsia-600"
-					>
-						{% for i in quantity %}
-						    <option value="{{ i }}">Quantity: {{ i }}</option>
-						{% endfor %}
+        {% if product.stock < 3 %}
+          <div class="text-error mb-4">Only {{product.stock}} left</div>
+        {% endif %}
 
-					</select>
-					<button
-						type="button"
-						id="product-show-add-to-cart-btn"
-						data-csrf="{{ csrf_token }}"
-						data-product-id="{{ product.id }}"
-						class="add-to-cart disabled:opacity-40 disabled:cursor-not-allowed w-40 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
-					>
-						Add To Cart
-					</button>
+        <div class="flex flex-row gap-4 mb-8">
+          <select id="product-quantity" name="quantity" class="w-full sm:flex-1 sm:w-auto border border-gray-400 rounded-md bg-slate-700 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-600 focus:border-fuchsia-600">
+            {% for i in quantity %}
+              <option value="{{ i }}">Quantity: {{ i }}</option>
+            {% endfor %}
+          </select>
 
-				</div>
+          <button type="button" id="product-show-add-to-cart-btn" data-csrf="{{ csrf_token }}" data-product-id="{{ product.id }}" class="add-to-cart disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-40 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-200">
+            Add To Cart
+          </button>
+        </div>
+      </div>
+    </div>
 
-			</div>
-		</div>
-		<!-- About this item -->
-		<b class="text-xl block mb-2">About this Item</b>
-		<div class="text-gray-400">
-			{{product.full_description|safe}}
-		</div>
-	</div>
-<script src="{% static 'products/js/carousel.js' %}" defer></script>
+    <div class="md:mt-6">
+      <b class="text-xl block mb-2">About this Item</b>
+      <div class="text-gray-400">
+        {{product.full_description|safe}}
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'products/js/carousel.js' %}" defer></script>
 </div>
 
 {% endblock %}

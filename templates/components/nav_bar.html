@@ -1,86 +1,58 @@
 {% load static %}
-<nav
-  class="fixed top-0 z-30 w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700"
->
+<nav class="fixed top-0 z-30 w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700">
   <div 
-	    data-cart-url="{% url 'add_to_cart' %}"
-	    data-auth="{{ request.user.authenticated|yesno:'true,false' }}"
-	    data-login-url="{% url 'login' %}"
-      id="data-container"
-      class="mx-auto px-8"
-   >
-    <div class="flex h-auto items-center justify-between">
+    data-cart-url="{% url 'add_to_cart' %}"
+    data-auth="{{ request.user.authenticated|yesno:'true,false' }}"
+    data-login-url="{% url 'login' %}"
+    id="data-container"
+    class="mx-auto px-4 sm:px-6 lg:px-8"
+  >
+    <div class="flex flex-row gap-6 h-auto items-center justify-between py-2">
+      
       <!-- Logo -->
-      <a href="{% url 'home' %}" class="flex items-center gap-2 cursor-pointer">
-        <img src="https://flowbite.com/docs/images/logo.svg" class="h-7 w-7" />
-        <span
-          class="text-base font-semibold tracking-wide text-slate-900 dark:text-slate-100"
-        >
+      <a href="{% url 'home' %}" class="cursor-pointer">
+        <span class="text-lg sm:text-2xl font-serif font-stretch-ultra-expanded font-extrabold tracking-wide text-slate-900 dark:text-slate-100">
           Ecommerce
         </span>
       </a>
 
       <!-- Right side -->
-      <div class="flex items-center gap-3 overflow-visible py-2">
-        <!-- Search (desktop) -->
+      <div class="flex flex-row items-center gap-1 md:gap-3 overflow-visible">
+        
+        <!-- Search (home page only) -->
         {% if request.resolver_match.url_name == 'home' %}
-
-          <div class="hidden md:block">
-            <div class="relative w-96">
-              <span
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-              >
+          <div class="block w-full sm:w-80 md:w-96">
+            <div class="relative w-full">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="7"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                  <line
-                    x1="20"
-                    y1="20"
-                    x2="16.65"
-                    y2="16.65"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                  <line x1="20" y1="20" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </span>
-
               <input
                 value="{{query}}"
                 type="search"
                 name="q"
                 data-search-input
                 placeholder="Search products..."
-                class="w-full h-9 pl-9 pr-4 text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
+                class="w-full h-8 md:h-9 pl-8 pr-3 md:pl-9 md:pr-4 text-xs md:text-sm rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500"
               />
             </div>
           </div>
         {% endif %}
 
         {% if request.user.is_authenticated %}
-
-        {% include "./authenticated_nav_bar.html" %}
-     
+          {% include "./authenticated_nav_bar.html" %}
         {% else %}
-
-        {% include "./guest_nav_bar.html" %}
-
+          {% include "./guest_nav_bar.html" %}
         {% endif %}
-        
       </div>
     </div>
-
   </div>
+
   <!-- Department links -->
   {% include "./partials/department_nav_bar.html" %}
 
   <script src="{% static 'js/nav_bar.js' %}" defer></script>
-  <script type="module" src="{% static 'carts/js/cart.js' %}" defer>
-  </script>
-
+  <script type="module" src="{% static 'carts/js/cart.js' %}" defer></script>
 </nav>

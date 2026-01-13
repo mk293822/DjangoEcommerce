@@ -1,16 +1,15 @@
 <div>
-	<div
-		class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-	>
-		{% for item in products_context %} 
-		{% include "products/partials/product_item.html" with item=item %} 
-		{% endfor %}
-	</div>
-	{% if products_context.count < 1 %}
-	<div class="flex justify-center items-center pt-40">
-		<p class="text-3xl font-extrabold text-slate-800 dark:text-slate-200">
-			No Product Yet
-		</p>
-	</div>
-	{%endif%}
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 no-scrollbar">
+    {% for item in products_context %} 
+      {% include "products/partials/product_item.html" with item=item %} 
+    {% endfor %}
+  </div>
+
+  {% if products_context.count < 1 %}
+  <div class="flex justify-center items-center pt-40">
+    <p class="text-3xl font-extrabold text-slate-800 dark:text-slate-200">
+      No Product Yet
+    </p>
+  </div>
+  {% endif %}
 </div>

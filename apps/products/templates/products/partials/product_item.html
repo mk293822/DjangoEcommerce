@@ -1,69 +1,45 @@
 {% load currency_filters %}
 
-<div
-	class="bg-white  dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
->
-	<a href="{% url 'product_details' item.product.slug %}?{{item.options_query}}" class="cursor-pointer">
-		<!-- Image -->
-	<div class="w-full h-48 bg-slate-200 dark:bg-slate-700 overflow-hidden">
-		{% if item.product.image %}
-		<img
-			src="{{ item.product.image.url }}"
-			alt="{{ item.product.name }}"
-			class="w-full h-full object-cover hover:scale-105 transition duration-300"
-		/>
-		{% else %}
-		<div
-			class="w-full h-full flex items-center justify-center text-slate-500 text-sm"
-		>
-			No Image for {{ item.product.name }}
-		</div>
-		{% endif %}
-	</div>
+<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
+  <a href="{% url 'product_details' item.product.slug %}?{{item.options_query}}" class="cursor-pointer block">
+    <!-- Image -->
+    <div class="w-full h-48 bg-slate-200 dark:bg-slate-700 overflow-hidden">
+      {% if item.product.image %}
+        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover hover:scale-105 transition duration-300"/>
+      {% else %}
+        <div class="w-full h-full flex items-center justify-center text-slate-500 text-sm">
+          No Image for {{ item.product.name }}
+        </div>
+      {% endif %}
+    </div>
 
-	<!-- Info -->
-	<div class="p-4">
-		<h2
-			class="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-2"
-		>
-			{{ item.product.name }}
-		</h2>
+    <!-- Info -->
+    <div class="p-4">
+      <h2 class="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-2">
+        {{ item.product.name }}
+      </h2>
 
-		<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-			{{ item.product.short_description }}
-		</p>
-		<div class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">
-			<a
-				href="#"
-				class="underline hover:text-slate-700 dark:hover:text-slate-200"
-			>
-				by {{ item.product.created_by.name }}
-			</a>
-			<span class="mx-1">in</span>
-			<a
-				href="?department={{ item.product.department.id }}"
-				class="hover:underline hover:text-slate-700 dark:hover:text-slate-200"
-			>
-				{{ item.product.department.name }}
-			</a>
-		</div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+        {{ item.product.short_description }}
+      </p>
 
-		<div class="flex items-center justify-between mt-4">
-			<span
-				class="text-base font-semibold text-indigo-600 dark:text-indigo-400"
-			>
-				{{ item.product.price|currency }}
-			</span>
+      <div class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">
+        <a href="#" class="underline hover:text-slate-700 dark:hover:text-slate-200">by {{ item.product.created_by.name }}</a>
+        <span class="mx-1">in</span>
+        <a href="?department={{ item.product.department.id }}" class="hover:underline hover:text-slate-700 dark:hover:text-slate-200">
+          {{ item.product.department.name }}
+        </a>
+      </div>
 
-			<button
-				type="button"
-				data-product-id="{{ item.product.id }}"
-				data-csrf="{{ csrf_token }}"
-				class="add-to-cart text-xs cursor-pointer font-medium text-white bg-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-500 transition"
-			>
-				Add to Cart
-			</button>
-		</div>
-	</div>
-	</a>
+      <div class="flex flex-row items-center justify-between mt-4 gap-2">
+        <span class="text-base font-semibold text-indigo-600 dark:text-indigo-400">
+          {{ item.product.price|currency }}
+        </span>
+
+        <button type="button" data-product-id="{{ item.product.id }}" data-csrf="{{ csrf_token }}" class="add-to-cart text-xs cursor-pointer font-medium text-white bg-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-500 transition">
+          Add
+        </button>
+      </div>
+    </div>
+  </a>
 </div>

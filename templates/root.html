@@ -7,15 +7,14 @@
     {% load static tailwind_tags %} 
     {% tailwind_css %}
     {% load static %}
-   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>{% block title %}Ecommerce{% endblock %}</title>
   </head>
   <body
     data-toast-duration="{{ TOAST_DURATION }}"
     class="bg-slate-100 text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-100"
   >
-  <!-- Toast Container -->
+    <!-- Toast Container -->
     <div
       id="toast-container"
       class="fixed top-6 right-6 z-50 flex max-h-[calc(3*88px)] w-96 flex-col gap-3 overflow-scroll no-scrollbar"
