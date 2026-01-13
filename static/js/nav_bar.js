@@ -36,35 +36,37 @@ document.addEventListener("DOMContentLoaded", () => {
 	setupDropdown("cart-button", "cart-dropdown");
 
 	// 🔍 Search
-	const searchInput = document.querySelector("[data-search-input]");
+	const searchInputs = document.querySelectorAll("[data-search-input]");
 	const productList = document.querySelector("#productList");
 
 	let debounceTimer;
 
-	if (searchInput && productList) {
-		searchInput.addEventListener("input", (e) => {
-			clearTimeout(debounceTimer);
+	if (searchInputs && productList) {
+		searchInputs.forEach((searchInput) => {
+			searchInput.addEventListener("input", (e) => {
+				clearTimeout(debounceTimer);
 
-			debounceTimer = setTimeout(() => {
-				query = e.target.value;
-				const params = new URLSearchParams(window.location.search);
-				if (query) {
-					params.set("q", query);
-				} else {
-					params.delete("q");
-				}
-				const url = `${window.location.pathname}?${params.toString()}`;
+				debounceTimer = setTimeout(() => {
+					query = e.target.value;
+					const params = new URLSearchParams(window.location.search);
+					if (query) {
+						params.set("q", query);
+					} else {
+						params.delete("q");
+					}
+					const url = `${window.location.pathname}?${params.toString()}`;
 
-				fetch(url, {
-					headers: { "X-Requested-With": "XMLHttpRequest" },
-				})
-					.then((res) => res.text())
-					.then((html) => {
-						productList.innerHTML = html;
-					});
+					fetch(url, {
+						headers: { "X-Requested-With": "XMLHttpRequest" },
+					})
+						.then((res) => res.text())
+						.then((html) => {
+							productList.innerHTML = html;
+						});
 
-				history.replaceState(null, "", url);
-			}, 300); // 300ms debounce
+					history.replaceState(null, "", url);
+				}, 300); // 300ms debounce
+			});
 		});
 	}
 });
