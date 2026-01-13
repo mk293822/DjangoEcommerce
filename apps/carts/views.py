@@ -35,7 +35,9 @@ def carts(request):
 # Create your views here.
 @csrf_exempt
 def add_to_cart(request):
-    if request.method != "POST" or not request.user.is_authenticated:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.method != "POST":
         return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=401)
 
     try:
