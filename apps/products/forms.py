@@ -2,6 +2,14 @@
 from django import forms
 from .models.variation_type import VariationType
 from .models.product import Product, ProductVariation
+from django_ckeditor_5.fields import CKEditor5Widget
+
+class ProductForm(forms.ModelForm):
+    full_description = forms.CharField(widget=CKEditor5Widget())
+
+    class Meta:
+        model = Product
+        fields = '__all__'
 
 class ProductVariationForm(forms.ModelForm):
     

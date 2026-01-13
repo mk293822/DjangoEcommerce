@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-id_)5o(0z%f9^(gp#^u%p(ui%^6h@dpfl9riiia*%d56kqyh-1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["minkhant29.pythonanywhere.com"]
+ALLOWED_HOSTS = ["minkhant29.pythonanywhere.com"] if not DEBUG else []
 
 
 # Application definition
@@ -42,12 +42,34 @@ INSTALLED_APPS = [
     'theme',
     'guardian',
     'nested_admin',
+    'django_ckeditor_5',
     'apps.users.apps.UsersConfig',
     'apps.departments.apps.DepartmentsConfig',
     'apps.products.apps.ProductsConfig',
     'apps.carts.apps.CartsConfig',
     'apps.orders.apps.OrdersConfig',
 ]
+
+CKEDITOR5_BASEPATH = '/static/ckeditor5/'
+
+
+# CKEditor configs
+CKEDITOR5_CONFIGS = {
+    'default': {
+        'toolbar': 'Full',
+        'height': 300,
+        'width': '100%',
+        'allowedContent': True,
+    },
+}
+
+# Optional: bleach allowed tags and attributes
+BLEACH_ALLOWED_TAGS = [
+    'p','b','i','u','strong','em','br','h1','h2','h3','ul','ol','li','a'
+]
+BLEACH_ALLOWED_ATTRIBUTES = {
+    'a': ['href', 'target', 'rel'],
+}
 
 LOGGING = {
     "version": 1,

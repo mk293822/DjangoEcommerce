@@ -1,10 +1,12 @@
+import bleach
 from django.db import models
 from uuid import uuid4
 from django.conf import settings
-from requests import options
 from apps.core.services.file_services import FileServices
 from apps.departments.models import Department, Category
 from django.db.models import Q
+from django_ckeditor_5.fields import CKEditor5Field
+
 
 def image_upload_to(instance, filename):
     return FileServices.generate_file_path(instance, filename, 'product_images')
@@ -40,7 +42,8 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='products')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    description = models.TextField()
+    full_description = CKEditor5Field(config_name='default')
+    short_description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(null=True, blank=True)
     status = models.BooleanField(default=True)
@@ -48,8 +51,19 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-    
+    meta_title = models.CharField(max_length=255)
+    meta_description = models.TextField(max_length=255)
     objects = ProductManager()
+    
+    def save(self, *args, **kwargs):
+        # sanitize HTML before saving
+        self.full_description = bleach.clean(
+            self.full_description,
+            tags=settings.BLEACH_ALLOWED_TAGS,
+            attributes=settings.BLEACH_ALLOWED_ATTRIBUTES,
+            strip=True
+        )
+        super().save(*args, **kwargs)
      
     def __str__(self):
         return self.name

@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
 from apps.products.admin.base import ModelAdmin
-from apps.products.forms import ProductVariationForm
+from apps.products.forms import ProductForm, ProductVariationForm
 from apps.products.models.variation_type import VariationTypeOption
 from apps.departments.models import Category
 from apps.products.models.product import ProductVariation, Product
@@ -52,10 +52,11 @@ class ProductVariationAdmin(ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
+    form = ProductForm
     list_display = ('name', 'department', 'category', 'price', 'stock', 'status', 'created_by')
     exclude = ('created_by', 'slug')
     sortable_by = ('name', 'department', 'category', 'price', 'stock', 'status')
-    search_fields = ('name', 'description')
+    search_fields = ('name',)
     
     class Media:
         js = (

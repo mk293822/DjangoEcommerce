@@ -9,11 +9,11 @@
 		<title>{product.title}</title>
 		<meta
 			name="title"
-			content="{{product.name}}"
+			content="{{product.meta_title}}"
 		/>
 		<meta
 			name="description"
-			content="{{product.description}}"
+			content="{{product.meta_description}}"
 		/>
 		<link
 			rel="canonical"
@@ -22,7 +22,7 @@
 
 		<meta
 			property="og:title"
-			content="{{product.name}}"
+			content="{{product.meta_title}}"
 		/>
 		<meta
 			property="og:image"
@@ -30,7 +30,7 @@
 		/>
 		<meta
 			property="og:description"
-			content="{{product.description}}"
+			content="{{product.meta_description}}"
 		/>
 		<meta
 			property="og:url"
@@ -106,12 +106,12 @@
 
 				</div>
 
-				<!-- About this item -->
-				<b class="text-xl block mb-2">About this Item</b>
-				<div class="text-gray-400">
-					{{product.description}}
-				</div>
 			</div>
+		</div>
+		<!-- About this item -->
+		<b class="text-xl block mb-2">About this Item</b>
+		<div class="text-gray-400">
+			{{product.full_description|safe}}
 		</div>
 	</div>
 <script src="{% static 'products/js/carousel.js' %}" defer></script>
