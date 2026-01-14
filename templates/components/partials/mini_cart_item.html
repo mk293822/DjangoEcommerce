@@ -1,6 +1,6 @@
 {% load currency_filters %}
 
-<a id="cart-item-{{ item.cart_item.id }}" href="{% url 'product_details' item.cart_item.product.slug %}?{{item.options_query}}" class="flex flex-col sm:flex-row gap-3 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition group">
+<a id="cart-item-{{ item.cart_item.id }}" href="{% url 'product_details' item.cart_item.product.slug %}?{{item.options_query}}" class="flex flex-row gap-3 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition group">
   <div class="h-12 w-12 flex items-center justify-center shrink-0">
     <img src="{{ item.cart_item.image }}" alt="{{ item.cart_item.product.name }}" class="max-h-full max-w-full rounded group-hover:scale-105 transition"/>
   </div>

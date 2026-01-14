@@ -76,7 +76,7 @@ class CartItem(models.Model):
         
     def total_price(self):
         """Calculates the total price for this cart item based on quantity and product/variation price."""
-        unit_price = self.variation.price if self.variation else self.product.price
+        unit_price = self.price()
         return unit_price * self.quantity
     
     def price(self):

@@ -24,6 +24,8 @@ class ObjectPermissionMixin:
         if request.user.is_superuser:
             return qs
         
+        filter_by = None
+        
         if hasattr(qs.model, 'created_by'):
             filter_by = 'created_by'
         elif hasattr(qs.model, 'product'):
@@ -33,8 +35,8 @@ class ObjectPermissionMixin:
         elif hasattr(qs.model, 'variation_type_option'):
             filter_by = 'variation_type_option__variation_type__product__created_by'
         
-            
-        qs  = qs.filter(**{filter_by: request.user})
+        if filter_by:
+            qs  = qs.filter(**{filter_by: request.user})
         
         return get_objects_for_user(request.user, f"products.view_{self.opts.model_name}", qs)
 

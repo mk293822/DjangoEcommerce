@@ -1,0 +1,51 @@
+<!-- templates/partials/footer.html -->
+<footer class="bg-white/80 dark:bg-slate-800/80 backdrop-blur border-t border-slate-200 dark:border-slate-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Top Links -->
+        <div class="grid grid-cols-4 gap-6 text-sm sm:text-base">
+            <div>
+                <h4 class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Shop</h4>
+                <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                    <li><a href="{% url 'home' %}" class="hover:text-slate-900 dark:hover:text-white">All Products</a></li>
+                    <li><a href="{% url 'carts' %}" class="hover:text-slate-900 dark:hover:text-white">Cart</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Account</h4>
+                <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                    {% if request.user.is_authenticated %}
+                        <li><a href="#" class="hover:text-slate-900 dark:hover:text-white">Profile</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}" class="hover:text-slate-900 dark:hover:text-white">Login</a></li>
+                    {% endif %}
+                    <li><a href="#" class="hover:text-slate-900 dark:hover:text-white">Orders</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Support</h4>
+                <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                    <li><a href="#" class="hover:text-slate-900 dark:hover:text-white">Contact</a></li>
+                    <li><a href="#" class="hover:text-slate-900 dark:hover:text-white">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Legal</h4>
+                <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                    <li><a href="#" class="hover:text-slate-900 dark:hover:text-white">Privacy</a></li>
+                    <li><a href="#" class="hover:text-slate-900 dark:hover:text-white">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom -->
+        <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4 flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            <p>© {% now "Y" %} Ecommerce</p>
+            <p>Secure payments · Fast delivery</p>
+        </div>
+
+    </div>
+</footer>

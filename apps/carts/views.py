@@ -2,6 +2,7 @@ import json
 import logging
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from apps.products.models.product import ProductVariation, Product
 from apps.products.services.product_details import ProductServices
@@ -12,21 +13,15 @@ from apps.carts.services import CartServices
 
 logger = logging.getLogger(__name__)
 
-
-
-
 # Create your views here.
-
+@login_required(login_url='login')
 def carts(request):
-    
-    if not request.user.is_authenticated:
-        return redirect('login')
     
     cart, _ = Cart.objects.get_or_create(user=request.user)
     context = {
         'cart_items': CartServices.get_grouped_cart_items(request.user),
         'total_quantity': cart.total_items,
-        'total_price': cart.total_price
+        'total_price': cart.total_price,
     }
     
     return render(request, 'carts/carts.html', context)
@@ -35,10 +30,15 @@ def carts(request):
 # Create your views here.
 @csrf_exempt
 def add_to_cart(request):
+    
     if not request.user.is_authenticated:
-        return redirect('login')
+        return JsonResponse(
+            {'login_required': True, 'status': 'error', 'message': 'Login Required!'},
+            status=401
+        )
+    
     if request.method != "POST":
-        return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=401)
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed!'}, status=405)
 
     try:
         data = json.loads(request.body)
@@ -123,10 +123,10 @@ def add_to_cart(request):
             "cart_item_count": cart_item_count,
             "cart_item_total_price": cart_item_total_price,
             "html": html
-        })
+        }, status=200)
 
     except ValueError as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     except Exception as e:
         logger.exception("Error adding product to cart")
-        return JsonResponse({'status': 'error', 'message': 'Something went wrong'})
+        return JsonResponse({'status': 'error', 'message': 'Something went wrong'}, status=500)

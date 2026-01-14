@@ -1,9 +1,9 @@
-<div id="product-carousel" class="flex flex-col sm:flex-row gap-2 sm:gap-6">
+<div id="product-carousel" class="flex flex-col sm:flex-row gap-2 sm:gap-3">
   <!-- Thumbnails -->
   <div class="flex flex-row sm:flex-col items-center gap-2 py-2 overflow-x-auto sm:overflow-x-visible order-2 sm:order-1">
     {% for image in carousel_images %}
       <button data-image="{{image.large}}" class="carousel-btns border-2 rounded cursor-pointer transition-transform duration-200 ease-out hover:scale-110 {% if carousel_images.0.large == image.large %}border-fuchsia-700{% endif %}">
-        <img src="{{image.thumb}}" class="w-[50px] object-fill h-[50px]" alt="{{product.name}}" />
+        <img src="{{image.thumb}}" class="w-[50px] object-cover h-[50px] sm:w-[60px] sm:h-[60px]" alt="{{product.name}}" />
       </button>
     {% endfor %}
   </div>

@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		const button = document.querySelector(`#${buttonId}`);
 		const dropdown = document.querySelector(`#${dropdownId}`);
 
+		if (!button || !dropdown) return;
+
 		// Toggle dropdown when clicking the button
 		button.addEventListener("click", (e) => {
 			e.stopPropagation();
@@ -34,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Setup both dropdowns
 	setupDropdown("profile-button", "profile-dropdown");
 	setupDropdown("cart-button", "cart-dropdown");
-
 	// 🔍 Search
 	const searchInputs = document.querySelectorAll("[data-search-input]");
 	const productList = document.querySelector("#productList");

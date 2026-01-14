@@ -3,21 +3,21 @@
 
 {% block authenticated_page %}
 
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 flex flex-col gap-6">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12 flex flex-col gap-6">
   <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Your Shopping Cart</h1>
 
   <!-- Shopping Cart List -->
   <div class="flex flex-col lg:flex-row gap-6">
 
+    <div class="flex flex-col flex-1 gap-2 sm:gap-4">
+      {% if cart_items|length == 0 %}
+        <div class="py-8 text-center text-gray-500 dark:text-gray-400 border rounded-lg">
+          You don't have any items yet!
+        </div>
+      {% endif %}
 
-    {% if cart_items|length == 0 %}
-      <div class="py-8 flex-1 text-center text-gray-500 dark:text-gray-400 border rounded-lg">
-        You don't have any items yet!
-      </div>
-    {% endif %}
-
-    {% for user, cart_items in cart_items.items %}
-      <div class="border flex-1 rounded-lg bg-white dark:bg-slate-800 shadow-sm p-4">
+      {% for user, data in cart_items.items %}
+      <div class="border rounded-lg bg-white dark:bg-slate-800 shadow-sm p-4">
         <!-- Vendor Header -->
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 mb-3">
           <a href="#" class="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
@@ -26,9 +26,9 @@
           <form action="#" method="post">
             {% csrf_token %}
             <input type="hidden" name="vendor_id" value="{{ user.id }}">
-            <button type="submit" class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-800 transition">
+            <button type="submit" class="inline-flex text-xs items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 sm:text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-800 transition">
               <!-- Credit Card Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="sm:h-5 sm:w-5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z" />
               </svg>
               Pay Only For This Seller
@@ -37,28 +37,39 @@
         </div>
 
         <!-- Cart Items -->
-        <div class="space-y-3">
-          {% for item in cart_items %}
-            <div class="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+        <div class="space-y-2 max-h-80 no-scrollbar overflow-y-scroll">
+          {% for item in data.items %}
+            <a href="{% url 'product_details' item.cart_item.product.slug %}?{{ item.options_query }}" class="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
               <div class="flex items-center gap-3">
                 <!-- Optional: Product image -->
-                {% if item.product.image %}
-                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-16 h-16 object-cover rounded-md">
+                {% if item.cart_item.product.image %}
+                  <img src="{{ item.cart_item.product.image.url }}" alt="{{ item.cart_item.product.name }}" class="w-16 h-16 object-cover rounded-md">
                 {% endif %}
                 <div>
-                  <p class="font-medium text-slate-900 dark:text-slate-100">{{ item.product.name }}</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">{{ item.product.short_description }}</p>
+                  <p class="font-medium text-slate-900 dark:text-slate-100">{{ item.cart_item.product.name }}</p>
+                  <p class="text-sm text-slate-500 dark:text-slate-400">{{ item.cart_item.variation.variation_type_options }}</p>
                 </div>
               </div>
               <div class="text-right">
-                <p class="font-semibold text-slate-900 dark:text-slate-100">${{ item.price }}</p>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Qty: {{ item.quantity }}</p>
+                <p class="font-semibold text-slate-900 dark:text-slate-100">${{ item.cart_item.price }}</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Qty: {{ item.cart_item.quantity }}</p>
               </div>
-            </div>
+            </a>
           {% endfor %}
         </div>
+
+        <!-- Cart Footer -->
+        <div class="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3 mt-3">
+          <div class="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+            Total
+          </div>
+          <div class="inline-flex text-xs items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 sm:text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-800 transition">
+            {{ data.total_quantity }} items - ${{ data.total_price }}
+          </div>
+        </div>
       </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
 
     <!-- Cart Summary -->
     <div class="lg:w-80 shrink-0 space-y-4">
@@ -80,8 +91,6 @@
       </div>
     </div>
   </div>
-
-
 </div>
 
 {% endblock %}

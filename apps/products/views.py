@@ -14,7 +14,7 @@ def product_list(request):
     
     query = request.GET.get('q', '')
     department_id = request.GET.get('department', 'all')
-    products = Product.objects.active()
+    products: Product = Product.objects.active().order_by('-id')[:20]
     departments = Department.objects.filter(status=True)
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)

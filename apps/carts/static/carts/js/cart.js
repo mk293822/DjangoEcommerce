@@ -4,67 +4,41 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Select all add-to-cart buttons
 	const buttons = document.querySelectorAll(".add-to-cart");
 	const dataContainer = document.querySelector("#data-container");
+	const quantity = document.querySelector("#product-quantity");
 	const loginUrl = decodeURIComponent(dataContainer.dataset.loginUrl);
-	const isAuthenticated = dataContainer.dataset.auth;
 	const cartUrl = decodeURIComponent(dataContainer.dataset.cartUrl);
 
 	document.addEventListener("click", (e) => {
 		if (e.target.closest(".add-to-cart")) {
-			e.preventDefault();
 			e.stopPropagation();
+			e.preventDefault();
 		}
 	});
 
 	buttons.forEach((button) => {
 		button.addEventListener("click", function (e) {
 			e.preventDefault();
-			const quantity = document.querySelector("#product-quantity");
+
 			const productId = this.dataset.productId;
 			const csrfToken = this.dataset.csrf;
 			const urlParams = new URLSearchParams(window.location.search);
 
-			const selectedOptions =
-				[...urlParams.values()].map(Number) == [NaN]
-					? [...urlParams.values()].map(Number)
-					: null;
+			let selectedOptions = [...urlParams.values()]
+				.map(Number)
+				.filter((n) => !isNaN(n));
+			if (!selectedOptions.length) selectedOptions = null;
 
 			if (!productId) {
 				console.error("Button has no product ID!", this);
 				return;
 			}
 
-			if (isAuthenticated) {
-				fetch(cartUrl, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-CSRFToken": csrfToken,
-					},
-					body: JSON.stringify({
-						product_id: productId,
-						quantity: quantity?.value ?? 1,
-						selectedOptions: selectedOptions,
-					}),
-				})
-					.then((res) => res.text())
-					.then((data) => {
-						if (typeof data === "string") {
-							data = JSON.parse(data);
-						}
-						if (data.status == "success") {
-							eventBus.emit("notify:success", data.message);
-							// eventBus.emit("cart:updated", data);
-							updateCartNumber(data);
-						} else {
-							eventBus.emit("notify:error", data.message);
-						}
-					})
-					.catch((err) =>
-						eventBus.emit("notify:error", "Something went wrong!")
-					);
-			} else {
-				window.location.href = loginUrl;
-			}
+			const context = {
+				product_id: productId,
+				quantity: quantity?.value ?? 1,
+				selectedOptions: selectedOptions,
+			};
+			addToCartFetch({ context, csrfToken });
 		});
 	});
 
@@ -94,6 +68,36 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (emptyCartContainer) {
 				emptyCartContainer.classList.add("hidden");
 			}
+		}
+	};
+
+	const addToCartFetch = async ({ context, csrfToken }) => {
+		try {
+			const res = await fetch(cartUrl, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrfToken,
+				},
+				body: JSON.stringify(context),
+			});
+			const data = await res.json();
+
+			if (res.status === 401) {
+				window.location.href = loginUrl;
+				return;
+			}
+
+			if (!res.ok || data.status === "error") {
+				eventBus.emit("notify:error", data.message);
+				return;
+			}
+
+			eventBus.emit("notify:success", data.message);
+			updateCartNumber(data);
+		} catch (err) {
+			console.error(err);
+			eventBus.emit("notify:error", "Something went wrong!");
 		}
 	};
 });

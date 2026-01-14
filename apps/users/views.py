@@ -35,6 +35,7 @@ def login_view(request):
             if user is not None:
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('home')
+            
     else:
         form = LoginForm()
             

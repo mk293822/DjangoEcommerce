@@ -24,16 +24,31 @@ function createToast(message, type) {
 	toast.className = "translate-x-10 opacity-0 transition-all duration-300";
 
 	toast.innerHTML = `
-        <div class="flex items-start gap-3 rounded-lg border-l-4 p-4 shadow-lg ${
-					cfg.border
-				} ${cfg.bg}">
-            <div class="mt-1 text-xl">${cfg.icon}</div>
-            <div class="flex-1">
-                <p class="font-semibold">${type.toUpperCase()}</p>
-                <p class="text-sm opacity-90">${message}</p>
-            </div>
-            <button class="toast-close text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">✕</button>
-        </div>
+		<div class="flex w-full max-w-sm sm:max-w-md gap-3 rounded-lg border-l-4 p-3 sm:p-4 shadow-lg ${
+			cfg.border
+		} ${cfg.bg}">
+			
+			<div class="shrink-0 mt-0.5 text-lg sm:text-xl">
+				${cfg.icon}
+			</div>
+
+			<div class="flex-1 min-w-0">
+				<p class="font-semibold text-sm sm:text-base truncate">
+					${type.toUpperCase()}
+				</p>
+				<p class="text-xs sm:text-sm opacity-90 wrap-break-words">
+					${message}
+				</p>
+			</div>
+
+			<button
+				class="shrink-0 ml-1 toast-close text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base"
+				aria-label="Close notification"
+			>
+				✕
+			</button>
+		</div>
+
     `;
 
 	return toast;

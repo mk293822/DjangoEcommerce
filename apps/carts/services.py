@@ -1,4 +1,5 @@
 from collections import defaultdict
+from decimal import Decimal
 from apps.products.services.product_details import ProductServices
 from .models import Cart, CartItem
 
@@ -30,10 +31,20 @@ class CartServices:
         cart, _ = Cart.objects.get_or_create(user=user)
         items = CartItem.objects.filter(cart=cart)
         
-        grouped_items = defaultdict(list)
+        grouped_items = defaultdict(lambda: {
+            "items": [],
+            "total_quantity": 0,
+            "total_price": Decimal('0.00')
+        })
         
         for item in items:
             creator = item.product.created_by
-            grouped_items[creator].append(item)
+            cart_item = {
+                "cart_item": item,
+                "options_query": ProductServices.get_query_string(product=item.product, variation=item.variation),
+            }
+            grouped_items[creator]["items"].append(cart_item)
+            grouped_items[creator]["total_quantity"] += item.quantity
+            grouped_items[creator]["total_price"] += item.total_price()
         
         return dict(grouped_items)
