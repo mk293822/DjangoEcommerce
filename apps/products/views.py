@@ -1,3 +1,4 @@
+from math import prod
 from django.shortcuts import render
 from apps.carts.models import Cart
 from apps.carts.services import CartServices
@@ -14,7 +15,7 @@ def product_list(request):
     
     query = request.GET.get('q', '')
     department_id = request.GET.get('department', 'all')
-    products: Product = Product.objects.active().order_by('-id')[:20]
+    products: Product = Product.objects.active().order_by('-id')
     departments = Department.objects.filter(status=True)
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
@@ -25,7 +26,7 @@ def product_list(request):
         products = products.filter(department_id=department_id)
         
     products = products.search(query)
-    
+    products = products[:20]
     products_context = []
     for product in products:
         
