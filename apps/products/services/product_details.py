@@ -1,7 +1,26 @@
 import os
 from urllib.parse import urlencode
 
+from apps.carts import models
+
 class ProductServices:
+    
+    @staticmethod
+    def get_product_context(products, cart):
+        products_context = []
+        for product in products:
+            
+            excluded_variation_ids = cart.items.filter(
+                product=product,
+                variation__isnull=False,
+                variation__stock=models.F('quantity')
+            ).values_list('variation_id', flat=True) if cart else []
+            
+            products_context.append({
+                'product': product,
+                'options_query': ProductServices.get_query_string(product=product, excluded_variation_ids=excluded_variation_ids),
+            })
+        return products_context
     
     @staticmethod
     def get_query_string(*, product, excluded_variation_ids = [], variation = None):

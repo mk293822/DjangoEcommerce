@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	).dataset;
 
 	// { Color: 15, Size: 18, Storage: 21 }
+	console.log(variationDataset.selectedOptions);
 	let selectedVariationOptions = JSON.parse(variationDataset.selectedOptions);
 
 	// {

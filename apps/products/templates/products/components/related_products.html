@@ -1,0 +1,15 @@
+{% load currency_filters %}
+
+<div class="mt-12">
+  <b class="text-2xl block mb-4">Related Products</b>
+
+  {% if related_products %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {% for item in related_products %} 
+            {% include "products/partials/product_item.html" with item=item %} 
+        {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-400">No related products found.</p>
+  {% endif %}
+</div>

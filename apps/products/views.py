@@ -1,14 +1,14 @@
-from math import prod
-from django.shortcuts import render
+import json
+from django.shortcuts import render, get_object_or_404
 from apps.carts.models import Cart
 from apps.carts.services import CartServices
 from apps.departments.models import Department
 from apps.products.models.variation_type import VariationType
 from apps.products.services.product_details import ProductServices
 from .models.product import Product, ProductVariation
-import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.db.models import Q
 
 # Create your views here.
 def product_list(request):
@@ -26,19 +26,7 @@ def product_list(request):
         products = products.filter(department_id=department_id)
         
     products = products.search(query)
-    products_context = []
-    for product in products:
-        
-        excluded_variation_ids = cart.items.filter(
-            product=product,
-            variation__isnull=False,
-            variation__stock=models.F('quantity')
-        ).values_list('variation_id', flat=True) if cart else []
-        
-        products_context.append({
-            'product': product,
-            'options_query': ProductServices.get_query_string(product=product, excluded_variation_ids=excluded_variation_ids),
-        })
+    products_context = ProductServices.get_product_context(products, cart)
     
     context = {
         'products_context': products_context, 
@@ -55,17 +43,20 @@ def product_list(request):
 
 def product_details(request, slug):
     
-    product: Product = Product.objects.get(slug=slug)
+    product: Product = get_object_or_404(Product, slug=slug)
     product_variations: ProductVariation = product.variations.all()
     has_variation: bool = product_variations.count() > 0
     variation_types: VariationType = VariationType.objects.filter(product=product)
     carousel_images = ProductServices.get_carousel_images(has_variation, product, request)
+    products =  Product.objects.filter(Q(department=product.department) | Q(category=product.category)).exclude(id=product.id)
+    
     context = {
         'product': product,
         'has_variation': has_variation,
         'carousel_images': carousel_images,
         'created_by': product.created_by.name,
-        'quantity': range(1, product.max_quantity + 1)
+        'quantity': range(1, product.max_quantity + 1),
+        'related_products': ProductServices.get_product_context(products, request.user.cart)
     }
     
     context.update(CartServices.get_cart_context(request.user))        
