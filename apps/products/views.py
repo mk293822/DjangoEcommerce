@@ -26,7 +26,6 @@ def product_list(request):
         products = products.filter(department_id=department_id)
         
     products = products.search(query)
-    products = products[:20]
     products_context = []
     for product in products:
         
