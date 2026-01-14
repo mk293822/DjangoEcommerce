@@ -48,7 +48,7 @@ def product_details(request, slug):
     has_variation: bool = product_variations.count() > 0
     variation_types: VariationType = VariationType.objects.filter(product=product)
     carousel_images = ProductServices.get_carousel_images(has_variation, product, request)
-    products =  Product.objects.filter(Q(department=product.department) | Q(category=product.category)).exclude(id=product.id)
+    products =  Product.objects.active().filter(Q(department=product.department) | Q(category=product.category)).exclude(id=product.id)
     
     context = {
         'product': product,
