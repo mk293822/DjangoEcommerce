@@ -22,7 +22,11 @@
     ></div>
 
     {% block content %}{% endblock %}
+    <script id="js_messages_data" type="application/json">
+      {{ js_messages|safe }}
+    </script>
     <script type="module" src="{% static 'js/event_bus.js' %}"></script>
     <script type="module" src="{% static 'js/toast.js' %}" defer></script>
+    <script type="module" src="{% static 'js/messages.js' %}" defer></script>
   </body>
 </html>

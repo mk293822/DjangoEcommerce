@@ -1,11 +1,13 @@
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-
+from apps.users import constants
 from apps.users.models import User
+from apps.users.services import UserServices
 from .forms import LoginForm, UserCreationForm
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 @login_required(login_url='login')
 def profile(request):
@@ -13,27 +15,40 @@ def profile(request):
     
     if request.method == 'POST':
         post_request = request.POST
-        name = post_request.get('name', '').strip()
-        email = post_request.get('email', '').strip()
-        avatar = post_request.get('avatar')
-        
-        fields = []
-        
-        if name and name != user.name:
-            user.name = name
-            fields.append('name')
-        if email and email != user.email:
-            user.email = email
-            fields.append('email')
-        if avatar:
-            user.avatar = avatar
-            fields.append('avatar')
-        
-        if fields:
-            user.save(update_fields=fields)
+        form_type = post_request.get('form-type')
+        # User Information Update Form
+        if form_type == constants.FORM_USER_INFO:
+            result = UserServices.update_user_information(post_request, request.FILES, user)
+            
+            if result.get('updated'):
+                messages.success(request, 'Profile Updated Successfully!')
+            else:
+                messages.info(request, 'No changed detected!')
+            
+            return redirect('profile')
+        # Update Password Form
+        elif form_type == constants.FORM_UPDATE_PASSWORD:
+            pass
+        elif form_type == constants.FORM_DELETE_ACCOUNT:
+            pass
+        elif form_type == constants.FORM_VENDOR_DETAILS:
+            pass
     
+    js_messages = json.dumps([
+        {"tags": m.tags, "text": m.message} 
+        for m in messages.get_messages(request)
+    ])
+    
+    # context
     context = {
         'user': user,
+        "form_types": {
+            "user_info": constants.FORM_USER_INFO,
+            "update_password": constants.FORM_UPDATE_PASSWORD,
+            "vendor_details": constants.FORM_VENDOR_DETAILS,
+            "delete_account": constants.FORM_DELETE_ACCOUNT,
+        },
+        "js_messages": js_messages,
     }
     return render(request, "users/profile.html", context)
 

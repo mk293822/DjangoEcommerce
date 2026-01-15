@@ -15,6 +15,11 @@ const TYPES = {
 		border: "border-red-500",
 		bg: "bg-red-50 text-red-800 dark:bg-red-900/90 dark:text-red-200",
 	},
+	info: {
+		icon: "ℹ️",
+		border: "border-blue-500",
+		bg: "bg-blue-50 text-blue-800 dark:bg-blue-900/90 dark:text-blue-200",
+	},
 };
 
 function createToast(message, type) {
@@ -94,4 +99,5 @@ function removeToast(toast) {
 document.addEventListener("DOMContentLoaded", () => {
 	eventBus.on("notify:success", (msg) => showToast(msg, "success"));
 	eventBus.on("notify:error", (msg) => showToast(msg, "error"));
+	eventBus.on("notify:info", (msg) => showToast(msg, "info"));
 });
