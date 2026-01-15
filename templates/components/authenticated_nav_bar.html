@@ -2,7 +2,7 @@
 
 <div class="flex flex-row items-center md:gap-3">
   <!-- Cart Count -->
-  {% if request.resolver_match.url_name != 'carts' %}
+  {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'product_details' %}
     <div class="relative inline-block">
       <!-- Cart button -->
       <button
@@ -43,7 +43,9 @@
       {% include './partials/user_icon.html' %}
     </button>
     <div id="profile-dropdown" class="dropdown absolute mt-5 opacity-0 pointer-events-none z-50 right-0 md:right-10 shadow-slate-800 dark:shadow-slate-400 min-w-max w-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow py-2 transition-opacity duration-200">
-      <a href="#" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">Profile</a>
+      {% if request.resolver_match.url_name != 'profile' %}
+        <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">Profile</a>
+      {% endif %}
       {% if request.user.is_staff %}
         <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">To Admin Panel</a>
       {% endif %}

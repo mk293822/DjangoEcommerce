@@ -1,13 +1,59 @@
 from django.apps import apps
 from django.dispatch import receiver
-from django.db.models.signals import post_migrate, pre_delete, pre_save
+from django.db.models.signals import post_migrate, pre_delete, pre_save, post_save
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from apps.users.models import User
+from apps.users.models import User, Vendor
 from .constants import *
 from django.db import transaction
 from apps.core.services.file_services import FileServices
 
+IMAGE_SIZES = {
+    "large": (1024, 1024),
+    "thumb": (128, 128),
+}
+
+@receiver(pre_delete, sender=User)
+def delete_avatar_on_user_delete(sender, instance, **kwargs):
+    FileServices.delete_file_from_media(instance.avatar)
+
+@receiver(pre_save, sender=User)
+def remove_avatar_if_cleared(sender, instance: User, **kwargs):
+    if not instance.pk:
+        return
+    
+    old_user = User.objects.get(pk=instance.pk)
+    
+    if old_user.avatar and not instance.avatar:
+        FileServices.delete_file_from_media(old_user.avatar)
+
+@receiver(post_save, sender=User)
+def resize_user_avatar(sender, instance, **kwargs):
+    if instance.avatar:
+        FileServices.resize_image(instance.avatar.path, IMAGE_SIZES)
+    
+# Vendor
+@receiver(pre_delete, sender=Vendor)
+def delete_cover_image_on_vendor_delete(sender, instance, **kwargs):
+    FileServices.delete_file_from_media(instance.cover_image)
+
+@receiver(pre_save, sender=Vendor)
+def remove_cover_image_if_cleared(sender, instance: Vendor, **kwargs):
+    if not instance.pk:
+        return
+    
+    old_vendor = Vendor.objects.get(pk=instance.pk)
+    
+    if old_vendor.cover_image and not instance.cover_image:
+        FileServices.delete_file_from_media(old_vendor.cover_image)
+
+@receiver(post_save, sender=Vendor)
+def resize_vendor_cover_image(sender, instance, **kwargs):
+    if instance.cover_image:
+        FileServices.resize_image(instance.cover_image.path, IMAGE_SIZES)
+        
+
+# Migrate roles and permissions
 @receiver(post_migrate)
 def create_roles_and_permissions(sender, **kwargs):
     with transaction.atomic():
@@ -79,20 +125,3 @@ def create_roles_and_permissions(sender, **kwargs):
                 
 
         print("Roles and permissions created successfully")
-
-@receiver(pre_delete, sender=User)
-def delete_avatar_on_user_delete(sender, instance, **kwargs):
-    FileServices.delete_file_from_media(instance.avatar)
-
-@receiver(pre_save, sender=User)
-def remove_avatar_if_cleared(sender, instance: User, **kwargs):
-    if not instance.pk:
-        return
-    
-    try:
-        old_user = User.objects.get(pk=instance.pk)
-    except User.DoesNotExist:
-        return
-    
-    if old_user.avatar and not instance.avatar:
-        FileServices.delete_file_from_media(old_user.avatar)

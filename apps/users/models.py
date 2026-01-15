@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
 from apps.core.services.file_services import FileServices
+from apps.users.choices import Status
 
 def avatar_upload_to(instance, filename):
     return FileServices.generate_file_path(instance, filename, 'avatar', 'uuid')
@@ -46,3 +47,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def is_vendor(self):
+        vendor = getattr(self, "vendor_details", None)
+        return bool(vendor and vendor.status == Status.APPROVED)
+
+        
+
+def vendor_cover_image_upload_to(instance, filename):
+    return FileServices.generate_file_path(instance.user, filename, "vendor_cover_images", "uuid")
+
+class Vendor(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="vendor_details")
+    store_name = models.CharField(max_length=100)
+    store_address = models.TextField()
+    cover_image = models.ImageField(upload_to=vendor_cover_image_upload_to, null=True, blank=True)
+    status = models.CharField(choices=Status.choices, default=Status.PENDING, max_length=20)
+    
