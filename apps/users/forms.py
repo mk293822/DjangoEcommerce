@@ -4,6 +4,7 @@ from .models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
 from .constants import GROUP_CUSTOMER
+from django.contrib.auth.password_validation import validate_password
 
 class UserCreationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -12,9 +13,22 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['name', 'email', 'password']
+        
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        user = User(
+            name=self.cleaned_data.get('name'),
+            email=self.cleaned_data.get('email')
+        )
+        try:
+            validate_password(password, user)
+        except forms.ValidationError as e:
+            raise forms.ValidationError(e.messages) 
+        return password
 
     def save(self, commit=True, group_name=GROUP_CUSTOMER):
         user = super().save(commit=False)
+        
         user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()

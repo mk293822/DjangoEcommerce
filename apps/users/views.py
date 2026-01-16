@@ -9,6 +9,7 @@ from .forms import LoginForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
+from django.db import DatabaseError, transaction
 
 @login_required(login_url='login')
 def profile(request):
@@ -53,7 +54,23 @@ def profile(request):
         
         # Delete Account Form
         elif form_type == constants.FORM_DELETE_ACCOUNT:
-            pass
+            password_confirmation = post_request.get('password_confirmation')
+            
+            if not user.check_password(password_confirmation):
+                messages.error(request, "Password Wrong!")
+                return redirect('profile')
+            
+            try:
+                with transaction.atomic():
+                    user.delete()
+            except DatabaseError:
+                messages.error(request, "Something went wrong! Try again.")
+                return redirect('profile')
+            
+            messages.success(request, 'Account Deleted Successfully!')
+            logout(request)
+            return redirect('login')
+            
         elif form_type == constants.FORM_VENDOR_DETAILS:
             pass
     
@@ -110,8 +127,12 @@ def login_view(request):
             
     else:
         form = LoginForm()
-            
-    return render(request, 'users/auth/login.html', {'form': form})
+    
+    js_messages = json.dumps([
+        {"tags": m.tags, "text": m.message} 
+        for m in messages.get_messages(request)
+    ])
+    return render(request, 'users/auth/login.html', {'form': form, 'js_messages': js_messages})
 
 @login_required(login_url='login')
 def logout_view(request):
