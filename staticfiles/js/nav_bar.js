@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const setupDropdown = (buttonId, dropdownId) => {
-		const button = document.querySelector(`#${buttonId}`);
-		const dropdown = document.querySelector(`#${dropdownId}`);
+		const button = document.getElementById(`${buttonId}`);
+		const dropdown = document.getElementById(`${dropdownId}`);
 
 		if (!button || !dropdown) return;
 
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	setupDropdown("cart-button", "cart-dropdown");
 	// 🔍 Search
 	const searchInputs = document.querySelectorAll("[data-search-input]");
-	const productList = document.querySelector("#productList");
+	const productList = document.getElementById("productList");
 
 	let debounceTimer;
 
