@@ -88,7 +88,36 @@ def profile(request):
             return redirect('profile')
             
         elif form_type == constants.FORM_VENDOR_DETAILS:
-            pass
+            store_name = post_request.get("store_name").strip()
+            store_address = post_request.get("store_address").strip()
+            
+            if not store_name:
+                messages.error(request, "Store name cannot be empty.")
+                return redirect('profile')
+            
+            try:
+                vendor: Vendor = user.vendor_details
+            except Vendor.DoesNotExist:
+                messages.error(request, "Vendor details not found.")
+                return redirect('profile')
+            
+            fields_to_update = []
+            if vendor.store_name != store_name:
+                vendor.store_name = store_name
+                fields_to_update.append("store_name")
+
+            if vendor.store_address != store_address:
+                vendor.store_address = store_address
+                fields_to_update.append("store_address")
+
+            if fields_to_update:
+                vendor.save(update_fields=fields_to_update)
+                messages.success(request, "Vendor details updated successfully!")
+            else:
+                messages.info(request, "No changes detected.")
+                
+            return redirect('profile')
+            
         elif form_type == constants.FORM_STRIPE_CONNECT:
             pass
     

@@ -20,7 +20,11 @@
     <div>
         {% if user.is_vendor %}
             
-            <form method="post" action="#" class="space-y-4">
+            <form method="post" action="{% url 'profile' %}" class="space-y-4 mt-2">
+                {% csrf_token %}
+                <!-- Store Type -->
+                <input type="hidden" name="form-type" value="{{form_types.vendor_details}}">
+
                 <!-- Store Name -->
                 <div>
                     <label for="store_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Store Name</label>
@@ -29,10 +33,10 @@
                         name="store_name"
                         type="text"
                         required
+                        value="{{user.vendor_details.store_name}}"
                         placeholder="Enter store name"
                         class="mt-2 text-md py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
                     />
-                    <!-- <p class="mt-2 text-sm text-red-600">Store name error</p> -->
                 </div>
 
                 <!-- Store Address -->
@@ -43,14 +47,14 @@
                         name="store_address"
                         placeholder="Enter Your Store Address"
                         class="mt-2 text-md py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                    ></textarea>
-                    <!-- <p class="mt-2 text-sm text-red-600">Store address error</p> -->
+                    >{{user.vendor_details.store_address}}</textarea>
                 </div>
 
                 <div class="flex gap-4">
                     <button
+                        id='vendor-details-update-btn'
                         type="submit"
-                        class="inline-flex items-center w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        class="inline-flex disabled:opacity-50 disabled:cursor-not-allowed items-center w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         Update
                     </button>
@@ -59,18 +63,6 @@
 
             <!-- Stripe Connect -->
             <form method="post" action="#" class="mt-4">
-                <!-- CSRF token -->
-                <!-- <input type="hidden" name="_token" value=""> -->
-
-                <!-- Connected message -->
-                <!--
-                @if($user->stripe_account_active)
-                <div class="text-center text-gray-600 my-4 text-sm">
-                    You are successfully connected to Stripe
-                </div>
-                @endif
-                -->
-
                 <button
                     type="submit"
                     class="inline-flex items-center w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

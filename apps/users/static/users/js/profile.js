@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		deleteAccountModalSubmitBtn.disabled = !e.target.value;
 	});
 
-	// Vendor Details
+	// Vendor Apply
 	const applyVendorBtns = document.querySelectorAll(".apply-vendor-btn");
 	const applyVendorModal = document.getElementById("apply-vendor-modal");
 	const applyVendorModalCancelBtn = document.getElementById(
@@ -86,4 +86,26 @@ document.addEventListener("DOMContentLoaded", () => {
 		applyVendorModal.classList.add("hidden");
 		applyVendorModal.classList.remove("flex");
 	});
+
+	// Vendor Details Update
+	const vendorDetailsUpdateBtn = document.getElementById(
+		"vendor-details-update-btn"
+	);
+	vendorDetailsUpdateBtn.disabled = true;
+	const storeName = document.getElementById("store_name");
+	const storeAddress = document.getElementById("store_address");
+
+	let orgStoreName = storeName.value;
+	let orgStoreAddress = storeAddress.value;
+
+	storeName.addEventListener("input", (e) =>
+		orgStoreName === e.target.value && orgStoreAddress === storeAddress.value
+			? (vendorDetailsUpdateBtn.disabled = true)
+			: (vendorDetailsUpdateBtn.disabled = false)
+	);
+	storeAddress.addEventListener("input", (e) =>
+		orgStoreAddress === e.target.value && orgStoreName === storeName.value
+			? (vendorDetailsUpdateBtn.disabled = true)
+			: (vendorDetailsUpdateBtn.disabled = false)
+	);
 });
