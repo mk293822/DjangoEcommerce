@@ -2,19 +2,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	/* ===============================
 	 * 1. READ DATA FROM DJANGO
 	 * =============================== */
-	const variationDataset = document.querySelector(
-		"#variation-container"
-	).dataset;
 
 	// { Color: 15, Size: 18, Storage: 21 }
-	console.log(variationDataset.selectedOptions);
-	let selectedVariationOptions = JSON.parse(variationDataset.selectedOptions);
+	let selectedVariationOptions = JSON.parse(
+		document.getElementById("selected_options_data").textContent
+	);
 
 	// {
 	//   "12": { stock: 10, price: 199, variation_type_options: [15,18,21] },
 	//   "13": { stock: 5,  price: 209, variation_type_options: [15,18,22] }
 	// }
-	const productVariationMap = JSON.parse(variationDataset.productVariations);
+	const productVariationMap = JSON.parse(
+		document.getElementById("product_variations_data").textContent
+	);
 
 	/* ===============================
 	 * 2. DOM ELEMENTS

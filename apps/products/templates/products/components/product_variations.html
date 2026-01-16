@@ -1,6 +1,14 @@
 {% load static %}
 
-<div class="mb-6" id="variation-container" data-product-variations="{{product_variations}}" data-selected-options="{{selected_options}}">
+<script id="product_variations_data" type="application/json">
+  {{ product_variations|safe }}
+</script>
+
+<script id="selected_options_data" type="application/json">
+  {{ selected_options|safe }}
+</script>
+
+<div class="mb-6">
   {% for vrt in variation_types %}
     {% if vrt.type == 'image' %}
       {% for vrt_name, options in variation_type_option_images.items %}
