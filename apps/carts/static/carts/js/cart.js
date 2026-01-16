@@ -3,8 +3,8 @@ import eventBus from "/static/js/event_bus.js";
 document.addEventListener("DOMContentLoaded", function () {
 	// Select all add-to-cart buttons
 	const buttons = document.querySelectorAll(".add-to-cart");
-	const dataContainer = document.querySelector("#data-container");
-	const quantity = document.querySelector("#product-quantity");
+	const dataContainer = document.getElementById("data-container");
+	const quantity = document.getElementById("product-quantity");
 	const loginUrl = decodeURIComponent(dataContainer.dataset.loginUrl);
 	const cartUrl = decodeURIComponent(dataContainer.dataset.cartUrl);
 
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const cartItemCounts = document.querySelectorAll(".cartItemCount");
 		const cartItemTotalPrice = document.querySelectorAll(".cartItemTotalPrice");
-		const cartItem = document.querySelector(`#cart-item-${data.cart_item.id}`);
+		const cartItem = document.getElementById(`cart-item-${data.cart_item.id}`);
 
 		cartItemCounts.forEach((item) => (item.innerHTML = data.cart_item_count));
 		cartItemTotalPrice.forEach(
@@ -62,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				cartItemEachCount.innerHTML = data.cart_item.quantity;
 		} else if (data.html) {
 			document
-				.querySelector("#cartItemsContainer")
+				.getElementById("cartItemsContainer")
 				.insertAdjacentHTML("afterbegin", data.html);
-			const emptyCartContainer = document.querySelector("#emptyCartContainer");
+			const emptyCartContainer = document.getElementById("emptyCartContainer");
 			if (emptyCartContainer) {
 				emptyCartContainer.classList.add("hidden");
 			}

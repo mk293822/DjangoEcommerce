@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	/* ===============================
 	 * 2. DOM ELEMENTS
 	 * =============================== */
-	const carouselWrapper = document.querySelector("#carousel-container");
-	const productQuantity = document.querySelector("#product-quantity");
-	const productPrice = document.querySelector("#product-price");
+	const carouselWrapper = document.getElementById("carousel-container");
+	const productQuantity = document.getElementById("product-quantity");
+	const productPrice = document.getElementById("product-price");
 	const imageVariationButtons = document.querySelectorAll(
 		".variation-image-btn"
 	);
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const currentPath = window.location.pathname;
-	const addToCartBtn = document.querySelector("#product-show-add-to-cart-btn");
+	const addToCartBtn = document.getElementById("product-show-add-to-cart-btn");
 	/* ===============================
 	 * 3. PREPARE VARIATION MATRIX
 	 * =============================== */

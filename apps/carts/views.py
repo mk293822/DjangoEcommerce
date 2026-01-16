@@ -28,7 +28,6 @@ def carts(request):
 
 
 # Create your views here.
-@csrf_exempt
 def add_to_cart(request):
     
     if not request.user.is_authenticated:

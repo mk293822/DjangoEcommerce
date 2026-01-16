@@ -1,13 +1,14 @@
 import json
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, update_session_auth_hash, logout
 from apps.users import constants
 from apps.users.models import User
 from apps.users.services import UserServices
 from .forms import LoginForm, UserCreationForm
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.password_validation import validate_password
 
 @login_required(login_url='login')
 def profile(request):
@@ -16,6 +17,7 @@ def profile(request):
     if request.method == 'POST':
         post_request = request.POST
         form_type = post_request.get('form-type')
+        
         # User Information Update Form
         if form_type == constants.FORM_USER_INFO:
             result = UserServices.update_user_information(post_request, request.FILES, user)
@@ -26,9 +28,30 @@ def profile(request):
                 messages.info(request, 'No changed detected!')
             
             return redirect('profile')
+        
         # Update Password Form
         elif form_type == constants.FORM_UPDATE_PASSWORD:
-            pass
+            password = post_request.get('password')
+            password_confirmation = post_request.get('password_confirmation')
+            
+            if password != password_confirmation:
+                messages.error(request, "Password doesn't match!")
+                return redirect('profile')
+            try:
+                validate_password(password, user)
+            except ValidationError as e:
+                for error in e.messages:
+                    messages.error(request, error)
+                return redirect('profile')
+            
+            user.set_password(password)
+            user.save(update_fields=['password'])
+            update_session_auth_hash(request, user)
+
+            messages.success(request, "Password updated successfully.")
+            return redirect('profile')
+        
+        # Delete Account Form
         elif form_type == constants.FORM_DELETE_ACCOUNT:
             pass
         elif form_type == constants.FORM_VENDOR_DETAILS:
@@ -91,7 +114,6 @@ def login_view(request):
     return render(request, 'users/auth/login.html', {'form': form})
 
 @login_required(login_url='login')
-@csrf_exempt
 def logout_view(request):
     logout(request)
     return redirect('home')
