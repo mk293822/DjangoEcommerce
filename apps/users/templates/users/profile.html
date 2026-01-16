@@ -18,21 +18,15 @@
             </div>
 
             <!-- Delete Account (desktop) -->
-            <div class="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800 hidden lg:block">
+            <div class="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800">
                 {% include "users/components/delete_account.html" %}
             </div>
         </div>
 
-        <!-- Right Column: Vendor Details + Delete Account (mobile) -->
-        <div class="space-y-6 lg:col-span-1">
             <!-- Vendor Details -->
+        <div class="mt-6 lg:mt-0">
             <div class="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800">
                 {% include "users/components/vendor_details.html" %}
-            </div>
-
-            <!-- Delete Account (mobile) -->
-            <div class="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800 lg:hidden">
-                {% include "users/components/delete_account.html" %}
             </div>
         </div>
 

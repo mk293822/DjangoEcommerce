@@ -2,8 +2,8 @@ import json
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, update_session_auth_hash, logout
-from apps.users import constants
-from apps.users.models import User
+from apps.users import choices, constants
+from apps.users.models import User, Vendor
 from apps.users.services import UserServices
 from .forms import LoginForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -70,8 +70,26 @@ def profile(request):
             messages.success(request, 'Account Deleted Successfully!')
             logout(request)
             return redirect('login')
+        
+        elif form_type == constants.FORM_APPLY_VENDOR:
+            
+            store_name = post_request.get("store_name").strip()
+            store_address = post_request.get("store_address").strip()
+            
+            if not store_name:
+                messages.error(request, "Store name cannot be empty.")
+                return redirect('profile')
+            
+            success, msg = Vendor.apply(user=user, store_name=store_name, store_address=store_address)
+            if success:
+                messages.success(request, msg)
+            else:
+                messages.info(request, msg)
+            return redirect('profile')
             
         elif form_type == constants.FORM_VENDOR_DETAILS:
+            pass
+        elif form_type == constants.FORM_STRIPE_CONNECT:
             pass
     
     js_messages = json.dumps([
@@ -85,8 +103,10 @@ def profile(request):
         "form_types": {
             "user_info": constants.FORM_USER_INFO,
             "update_password": constants.FORM_UPDATE_PASSWORD,
-            "vendor_details": constants.FORM_VENDOR_DETAILS,
             "delete_account": constants.FORM_DELETE_ACCOUNT,
+            "apply_vendor": constants.FORM_APPLY_VENDOR,
+            "vendor_details": constants.FORM_VENDOR_DETAILS,
+            "stripe_connect": constants.FORM_STRIPE_CONNECT
         },
         "js_messages": js_messages,
     }

@@ -18,15 +18,8 @@
     </header>
 
     <div>
-        {% if not user.is_vendor %}
-            <button
-                type="button"
-                class="inline-flex items-center mt-6 w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                onclick="document.getElementById('become-vendor-modal').classList.remove('hidden')"
-            >
-                Apply for Vendor
-            </button>
-        {% else %}
+        {% if user.is_vendor %}
+            
             <form method="post" action="#" class="space-y-4">
                 <!-- Store Name -->
                 <div>
@@ -85,35 +78,90 @@
                     Connect to Stripe
                 </button>
             </form>
+        {% elif user.is_pending_vendor %}
+           <p class="text-sm text-gray-700 dark:text-gray-300 mt-2">
+                Your vendor request is pending approval.
+                <span class="block mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Requested on Sep 12, 2025
+                </span>
+            </p>
+        {% elif user.is_rejected_vendor %}
+        <p class="text-sm text-gray-700 dark:text-gray-300 mt-2">
+            Your vendor request was not approved.
+            <span class="block mt-1 text-xs text-gray-500 dark:text-gray-400">
+                You may update your information and reapply.
+            </span>
+        </p>
+        <button
+            type="button"
+            class="apply-vendor-btn inline-flex items-center mt-6 w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+            Reapply for Vendor
+        </button>
+        {% else %}
+            <button
+                type="button"
+                class="apply-vendor-btn inline-flex items-center mt-6 w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+                Apply for Vendor
+            </button>
         {% endif %}
     </div>
 
     <!-- Become Vendor Modal -->
     <div
-        id="become-vendor-modal"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        id="apply-vendor-modal"
+        class="hidden fixed inset-0 z-50 items-center justify-center bg-black/50"
     >
         <div class="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <h2 class="text-xl font-medium text-gray-900 dark:text-gray-100">
                Apply for vendor
             </h2>
-            <p class="text-xs mt-1 text-gray-700 dark:text-gray-300">Are you sure you want to become a Vendor?</p>
+            <p class="text-xs text-gray-700 dark:text-gray-300">Are you sure you want to become a Vendor?</p>
 
-            <form method="post" action="#" class="mt-6 flex justify-end gap-3">
-                <button
-                    type="button"
-                    class="inline-flex items-center rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-                    onclick="document.getElementById('become-vendor-modal').classList.add('hidden')"
-                >
-                    Cancel
-                </button>
+            <form method="post" action="{% url 'profile' %}" class="mt-3 flex flex-col gap-3">
+                {% csrf_token %}
+                <input type="hidden" name="form-type" value="{{form_types.apply_vendor}}">
 
-                <button
-                    type="submit"
-                    class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Confirm
-                </button>
+                <div>
+                    <label for="store_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Store Name</label>
+                    <input
+                        name="store_name"
+                        type="text"
+                        required
+                        placeholder="Enter store name"
+                        class="mt-2 text-md py-2 px-4 block border w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    />
+                    <!-- <p class="mt-2 text-sm text-red-600">Store name error</p> -->
+                </div>
+
+                <!-- Store Address -->
+                <div>
+                    <label for="store_address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Store Address</label>
+                    <textarea
+                        name="store_address"
+                        placeholder="Enter Your Store Address"
+                        class="mt-2 text-md py-2 px-4 block border w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    ></textarea>
+                    <!-- <p class="mt-2 text-sm text-red-600">Store address error</p> -->
+                </div>
+
+                <div class="flex justify-end gap-3 mt-3">
+                    <button
+                        id='apply-vendor-modal-cancel-btn'
+                        type="button"
+                        class="inline-flex items-center rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Apply
+                    </button>
+                </div>
             </form>
         </div>
     </div>

@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	// Delete Account
-	// Elements
 	const deleteAccountBtn = document.getElementById("delete-account-btn");
 	const deleteAccountModal = document.getElementById("delete-account-modal");
 	const deleteAccountModalPasswordConfirm = document.getElementById(
@@ -51,10 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		"delete-account-model-submit-btn"
 	);
 
-	// Initial state
 	deleteAccountModalSubmitBtn.disabled = true;
 
-	// Open modal
 	deleteAccountBtn.addEventListener("click", () => {
 		deleteAccountModal.classList.remove("hidden");
 		deleteAccountModal.classList.add("flex");
@@ -62,23 +59,31 @@ document.addEventListener("DOMContentLoaded", () => {
 		deleteAccountModalSubmitBtn.disabled = true;
 	});
 
-	// Cancel modal
 	deleteAccountModalCancelBtn.addEventListener("click", () => {
 		deleteAccountModal.classList.add("hidden");
 		deleteAccountModal.classList.remove("flex");
 	});
 
-	// Enable/disable submit based on input
 	deleteAccountModalPasswordConfirm.addEventListener("input", (e) => {
 		deleteAccountModalSubmitBtn.disabled = !e.target.value;
 	});
 
-	// Submit modal
-	deleteAccountModalSubmitBtn.addEventListener("click", () => {
-		if (deleteAccountModalPasswordConfirm.value) {
-			// Here you can call API or form submission
-			deleteAccountModal.classList.add("hidden");
-			deleteAccountModal.classList.remove("flex");
-		}
+	// Vendor Details
+	const applyVendorBtns = document.querySelectorAll(".apply-vendor-btn");
+	const applyVendorModal = document.getElementById("apply-vendor-modal");
+	const applyVendorModalCancelBtn = document.getElementById(
+		"apply-vendor-modal-cancel-btn"
+	);
+
+	applyVendorBtns.forEach((btn) =>
+		btn.addEventListener("click", () => {
+			applyVendorModal.classList.remove("hidden");
+			applyVendorModal.classList.add("flex");
+		})
+	);
+
+	applyVendorModalCancelBtn.addEventListener("click", () => {
+		applyVendorModal.classList.add("hidden");
+		applyVendorModal.classList.remove("flex");
 	});
 });
