@@ -15,11 +15,11 @@ class FileServices:
             
             
     @staticmethod
-    def generate_file_path(instance, filename, foldername, id = "id"):
+    def generate_file_path(instance, filename, foldername, id = "id", model = "product/"):
         ext = filename.split('.')[-1]
         
         instance_uuid = getattr(instance, id, uuid.uuid4())
-        return os.path.join(foldername, str(instance_uuid), f"product/original.{ext}")
+        return os.path.join(foldername, str(instance_uuid), f"{model}original.{ext}")
     
     @staticmethod
     def resize_image(original_path, sizes):

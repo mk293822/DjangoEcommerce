@@ -401,6 +401,9 @@
   .mt-28 {
     margin-top: calc(var(--spacing) * 28);
   }
+  .mt-32 {
+    margin-top: calc(var(--spacing) * 32);
+  }
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
   }
@@ -1448,6 +1451,11 @@
   .sm\:mt-20 {
     @media (width >= 40rem) {
       margin-top: calc(var(--spacing) * 20);
+    }
+  }
+  .sm\:mt-24 {
+    @media (width >= 40rem) {
+      margin-top: calc(var(--spacing) * 24);
     }
   }
   .sm\:block {

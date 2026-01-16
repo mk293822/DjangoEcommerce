@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
@@ -6,7 +7,7 @@ from apps.users.choices import Status
 from django.db import transaction
 
 def avatar_upload_to(instance, filename):
-    return FileServices.generate_file_path(instance, filename, 'avatar', 'uuid')
+    return FileServices.generate_file_path(instance, filename, 'avatars', 'uuid', model="")
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -48,6 +49,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
     
+    @property
+    def thumb_avatar(self):
+        if not self.avatar:
+            return ""
+        
+        original_path = self.avatar.url
+        
+        base_path = os.path.dirname(original_path)
+        _, ext = os.path.splitext(original_path)
+        
+        return f"{base_path}/thumb{ext}"
+    
     def get_vendor_status(self):
         try:
             return self.vendor_details.status
@@ -65,11 +78,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_rejected_vendor(self):
         return self.get_vendor_status() == Status.REJECTED
-
-        
+     
 
 def vendor_cover_image_upload_to(instance, filename):
-    return FileServices.generate_file_path(instance.user, filename, "vendor_cover_images", "uuid")
+    return FileServices.generate_file_path(instance.user, filename, "avatars", "uuid", model="vendor_cover_image/")
 
 class Vendor(models.Model):
     id = models.AutoField(primary_key=True)

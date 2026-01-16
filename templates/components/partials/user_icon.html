@@ -1,9 +1,9 @@
 {% load initials %}
-{% if request.user.avatar %}
+{% if request.user.thumb_avatar %}
 <img
   class="w-10 h-10 rounded-full object-cover"
   alt="{{ request.user.name }}"
-  src="{{ request.user.avatar.url }}"
+  src="{{ request.user.thumb_avatar }}"
 />
 {% else %}
 <div class="avatar mx-auto">
