@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
+import stripe
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-id_)5o(0z%f9^(gp#^u%p(ui%^6h@dpfl9riiia*%d56kqyh-1
 DEBUG = False
 
 ALLOWED_HOSTS = ["minkhant29.pythonanywhere.com"] if not DEBUG else []
-
 
 # Application definition
 
@@ -48,6 +47,7 @@ INSTALLED_APPS = [
     'apps.products.apps.ProductsConfig',
     'apps.carts.apps.CartsConfig',
     'apps.orders.apps.OrdersConfig',
+    'apps.payments.apps.PaymentsConfig',
 ]
 
 CKEDITOR5_BASEPATH = '/static/ckeditor5/'
@@ -189,3 +189,4 @@ CURRENCY_FORMAT = 'USD'
 CURRENCY_LOCALE = 'en_US'
 ANONYMOUS_USER_NAME = None
 TOAST_DURATION = 3000
+PLATFORM_FEE_PERCENT=10

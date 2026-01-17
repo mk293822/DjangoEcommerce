@@ -39,12 +39,15 @@ class CartServices:
         
         for item in items:
             creator = item.product.created_by
-            cart_item = {
+            grouped_items[creator.id]["vendor"] = creator
+            grouped_items[creator.id]["items"].append({
                 "cart_item": item,
-                "options_query": ProductServices.get_query_string(product=item.product, variation=item.variation),
-            }
-            grouped_items[creator]["items"].append(cart_item)
-            grouped_items[creator]["total_quantity"] += item.quantity
-            grouped_items[creator]["total_price"] += item.total_price()
+                "options_query": ProductServices.get_query_string(
+                    product=item.product,
+                    variation=item.variation
+                ),
+            })
+            grouped_items[creator.id]["total_quantity"] += item.quantity
+            grouped_items[creator.id]["total_price"] += item.total_price()
         
         return dict(grouped_items)

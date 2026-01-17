@@ -10,6 +10,7 @@ from .models import Cart, CartItem
 from django.template.loader import render_to_string
 from django.db import models
 from apps.carts.services import CartServices
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +20,14 @@ def carts(request):
     
     cart, _ = Cart.objects.get_or_create(user=request.user)
     context = {
-        'cart_items': CartServices.get_grouped_cart_items(request.user),
+        'cart_items': CartServices.get_grouped_cart_items(request.user).values(),
         'total_quantity': cart.total_items,
         'total_price': cart.total_price,
+        'js_messages': json.dumps([
+            {"tags": m.tags, "text": m.message} 
+            for m in messages.get_messages(request)
+        ])
     }
-    
     return render(request, 'carts/carts.html', context)
 
 

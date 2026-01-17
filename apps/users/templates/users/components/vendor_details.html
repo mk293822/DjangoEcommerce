@@ -61,7 +61,18 @@
                 </div>
             </form>
 
-            
+            <!-- Stripe Connect -->
+            <form method="post" action="{% url 'profile' %}" class="mt-4">
+                {% csrf_token %}
+                <input type="hidden" name="form-type" value="{{form_types.stripe_connect}}">
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                    Connect to Stripe
+                </button>
+            </form>
         {% elif user.is_pending_vendor %}
            <p class="text-sm text-gray-700 dark:text-gray-300 mt-2">
                 Your vendor request is pending approval.

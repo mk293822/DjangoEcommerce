@@ -1,0 +1,35 @@
+{% extends "root.html" %}
+{% load currency_filters %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-12 px-6">
+  <div class="bg-linear-to-tr from-green-500 via-green-400 to-green-600 rounded-2xl shadow-xl p-8 flex flex-col items-center gap-6 text-center text-white">
+
+    <!-- Icon -->
+    <div class="bg-white rounded-full p-4 text-emerald-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+
+    <h1 class="text-3xl font-extrabold">Payment Completed!</h1>
+    <p class="text-lg text-emerald-100">Thank you for your purchase. Your payment was successful.</p>
+
+    <!-- Orders Loop -->
+    {% for order in orders %}
+    <div class="w-full bg-emerald-100 dark:bg-emerald-900 rounded-lg p-5 text-left text-gray-900 dark:text-white shadow-md mb-4">
+      <h2 class="text-lg font-semibold mb-2">Order #{{ order.id }}</h2>
+      <div class="flex justify-between mb-1"><span class="font-medium">Seller:</span> <span>{{ order.vendor.vendor_details.store_name }}</span></div>
+      <div class="flex justify-between mb-1"><span class="font-medium">Items:</span> <span>{{ order.items.count }}</span></div>
+      <div class="flex justify-between mb-1"><span class="font-medium">Total:</span> <span>${{ order.total_amount|floatformat:2 }}</span></div>
+    </div>
+    {% endfor %}
+
+    <!-- Buttons -->
+    <div class="flex gap-3 mt-4 w-full">
+      <a href="{% url 'home' %}" class="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-4 py-2 rounded-lg transition text-center">Back to Home</a>
+      <a href="#" class="flex-1 bg-white text-emerald-600 font-semibold px-4 py-2 rounded-lg hover:bg-emerald-50 text-center transition">View Orders</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
