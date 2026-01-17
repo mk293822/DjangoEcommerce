@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import stripe
+from environ import Env
+
+env = Env()
+env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -190,3 +194,5 @@ CURRENCY_LOCALE = 'en_US'
 ANONYMOUS_USER_NAME = None
 TOAST_DURATION = 3000
 PLATFORM_FEE_PERCENT=10
+
+STRIPE_API_KEY=env('STRIPE_SECRET_KEY_TEST', default='secret')
