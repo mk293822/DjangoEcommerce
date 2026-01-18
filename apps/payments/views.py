@@ -70,9 +70,8 @@ def stripe_success(request):
                 if item.variation:
                     item.variation.stock -= item.quantity
                     item.variation.save(update_fields=['stock'])
-                else:
-                    item.product.stock -= item.quantity
-                    item.product.save(update_fields=['stock'])
+                item.product.stock -= item.quantity
+                item.product.save(update_fields=['stock'])
 
         # =============================
         # CLEAR CART
