@@ -184,7 +184,7 @@ def checkout(request):
                             "currency": settings.CURRENCY_FORMAT,
                             "product_data": {
                                 "name": cart_item.product.name,
-                                "images": [cart_item.image]
+                                "images": [request.build_absolute_uri(cart_item.image)]
                             },
                             "unit_amount": int(cart_item.price() * 100),
                         },
