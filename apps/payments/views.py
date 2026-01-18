@@ -121,6 +121,7 @@ def stripe_failure(request):
     }
     return render(request, 'payments/stripe_failure.html', context)
 
+
 @login_required(login_url='login')
 @require_POST
 def checkout(request):
@@ -178,24 +179,13 @@ def checkout(request):
                     description = ", ".join([
                         f"{type_name}: {option.name}" for type_name, option in options.items()
                     ])
-                    
-                    carousel_images = ProductServices.get_carousel_images(
-                        has_variation=bool(cart_item.variation),
-                        product=cart_item.product,
-                        request=request
-                    )
-
-                    stripe_images = []
-                    if carousel_images:
-                        for image in carousel_images:
-                            stripe_images.append(request.build_absolute_uri(image['large']))
 
                     line_item = {
                         "price_data": {
                             "currency": settings.CURRENCY_FORMAT,
                             "product_data": {
                                 "name": cart_item.product.name,
-                                "images": stripe_images
+                                "images": [cart_item.image]
                             },
                             "unit_amount": int(cart_item.price() * 100),
                         },
