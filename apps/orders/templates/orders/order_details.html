@@ -1,0 +1,160 @@
+{% extends "root.html" %}
+{% load static %}
+
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+  <!-- Page Header -->
+  <div class="mb-8 flex items-center gap-3">
+    <!-- Back Button -->
+    <a
+      href="{% url 'orders' %}"
+      class="inline-flex h-9 w-9 items-center justify-center rounded-full
+            bg-slate-100 dark:bg-slate-700
+            text-slate-600 dark:text-slate-300
+            hover:bg-slate-200 dark:hover:bg-slate-600
+            transition"
+      aria-label="Back to orders"
+    >
+      <!-- Arrow Left Icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+
+    <!-- Title -->
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">
+        Order Details
+      </h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400">
+        Order ID: <span class="font-medium">#{{ order.id }}</span> ·
+        Placed on {{ order.created_at|date:"M d, Y" }}
+      </p>
+    </div>
+  </div>
+
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- RIGHT (on desktop) / TOP (on mobile): Summary + Status + Shipping -->
+    <div class="space-y-6 order-1 lg:order-2">
+
+      <!-- Order Status -->
+      <div
+        class="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm
+               border border-slate-200 dark:border-slate-700"
+      >
+        <h2 class="mb-2 text-lg font-semibold">Order Status</h2>
+
+        <span
+          class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium
+          {% if order.status == 'completed' %}
+            bg-emerald-100 text-emerald-700
+          {% elif order.status == 'pending' %}
+            bg-yellow-100 text-yellow-700
+          {% else %}
+            bg-slate-200 text-slate-700
+          {% endif %}
+          "
+        >
+          {{ order.status|title }}
+        </span>
+      </div>
+
+      <!-- Shipping Info -->
+      <div
+        class="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm
+               border border-slate-200 dark:border-slate-700"
+      >
+        <h2 class="mb-3 text-lg font-semibold">Shipping Address</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          {{ order.shipping_name }} <br />
+          {{ order.shipping_address }} <br />
+          {{ order.shipping_city }},
+          {{ order.shipping_state }} {{ order.shipping_zip }} <br />
+          {{ order.shipping_country }}
+        </p>
+      </div>
+
+      <!-- Order Summary -->
+      <div
+        class="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm
+               border border-slate-200 dark:border-slate-700"
+      >
+        <h2 class="mb-4 text-lg font-semibold">Order Summary</h2>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>${{ order.vendor_amount }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Platform Fee</span>
+            <span>${{ order.platform_fee }}</span>
+          </div>
+          <hr class="my-3 border-slate-200 dark:border-slate-700" />
+          <div class="flex justify-between text-base font-semibold">
+            <span>Total</span>
+            <span>${{ order.total_amount }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LEFT (on desktop) / BOTTOM (on mobile): Order Items -->
+    <div class="lg:col-span-2 space-y-4 order-2 lg:order-1">
+      {% for item in order.items.all %}
+      <div
+        class="flex gap-4 rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm
+               border border-slate-200 dark:border-slate-700"
+      >
+        <!-- Product Image -->
+        <div class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+          <img
+            src="{{ item.image }}"
+            alt="{{ item.product.name }}"
+            class="h-full w-full object-cover"
+          />
+        </div>
+
+        <!-- Product Info -->
+        <div class="flex-1">
+          <h3 class="font-medium text-slate-800 dark:text-slate-100">
+            {{ item.product.name }}
+          </h3>
+
+          {% if item.variation %}
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Variation: {{ item.variation }}
+          </p>
+          {% endif %}
+
+          <div class="mt-2 flex items-center justify-between">
+            <span class="text-sm text-slate-500">
+              Qty: {{ item.quantity }}
+            </span>
+            <span class="font-semibold text-slate-800 dark:text-slate-100">
+              ${{ item.price }}
+            </span>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-slate-500">No items found.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -3,7 +3,7 @@
 
 {% block authenticated_page %}
 
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12 flex flex-col w-screen gap-6">
+<div class="container mx-auto px-0 sm:px-6 lg:px-8 py-10 md:py-12 flex flex-col w-screen gap-6">
   <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Your Shopping Cart</h1>
 
   <!-- Shopping Cart List -->
@@ -11,7 +11,7 @@
 
     <div class="flex flex-col flex-1 gap-2 sm:gap-4">
       {% if cart_items|length == 0 %}
-        <div class="py-8 text-center text-gray-500 dark:text-gray-400 border rounded-lg">
+        <div class="py-8 h-full text-center text-xl font-extrabold text-gray-500 dark:text-gray-400 border rounded-lg">
           You don't have any items yet!
         </div>
       {% endif %}
@@ -23,17 +23,13 @@
             <a href="#" class="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
               {{ data.vendor.name }}
             </a>
-            <form action="{% url 'stripe_checkout' %}" method="post">
-              {% csrf_token %}
-              <input type="hidden" name="vendor_id" value="{{ data.vendor.id }}">
-              <button type="submit" class="inline-flex text-xs items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 sm:text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-800 transition">
+              <a href="{% url 'checkout_vendor' vendor_id=data.vendor.id %}" class="inline-flex text-xs items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 sm:text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-800 transition">
                 <!-- Credit Card Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="sm:h-5 sm:w-5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z" />
                 </svg>
                 Pay Only For This Seller
-              </button>
-            </form>
+              </a>
           </div>
 
           <!-- Cart Items -->
@@ -79,15 +75,23 @@
           <span>Subtotal ({{ total_quantity }} item{% if total_quantity > 1 %}s{% endif %}):</span>
           <span class="font-bold text-slate-900 dark:text-slate-100">${{ total_price }}</span>
         </p>
-        <form action="{% url 'stripe_checkout' %}" method="post">
-          {% csrf_token %}
-          <button type="submit" class="w-full flex justify-center items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition">
+          <button
+            type="button"
+            onclick="window.location.href='{% url 'checkout_all' %}'"
+            {% if cart_items|length == 0 %} disabled {% endif %}
+            class="w-full flex justify-center items-center gap-2 px-4 py-2
+                  rounded-lg font-medium transition
+                  bg-indigo-600 text-white
+                  hover:bg-indigo-700
+                  disabled:bg-indigo-400
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z" />
             </svg>
             Proceed to Checkout
           </button>
-        </form>
       </div>
     </div>
   </div>

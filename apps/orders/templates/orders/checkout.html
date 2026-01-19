@@ -1,0 +1,73 @@
+{% extends "root.html" %}
+
+{% block title %}Checkout - Ecommerce{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl w-full mx-auto p-6 rounded-md shadow-md bg-white dark:bg-slate-800 mt-10 sm:mt-16">
+    <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6 text-center sm:text-left">Shipping Details</h2>
+
+    <form method="POST" action="{% url 'stripe_checkout' %}" class="space-y-6">
+        {% csrf_token %}
+        {% if vendor_id %}
+            <input type="hidden" name="vendor_id" value="{{vendor_id}}">
+        {% endif %}
+        <!-- Full Name -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</label>
+            <input type="text" name="shipping_name" required
+                   placeholder="Your full name"
+                   class="mt-2 text-md border py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+        </div>
+
+        <!-- Address -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Address</label>
+            <textarea name="shipping_address" required rows="3"
+                      placeholder="Street address, P.O. box, etc."
+                      class="mt-2 text-md border py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"></textarea>
+        </div>
+
+        <!-- City / State -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">City</label>
+                <input type="text" name="shipping_city" required
+                       placeholder="City"
+                       class="mt-2 text-md border py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">State</label>
+                <input type="text" name="shipping_state"
+                       placeholder="State"
+                       class="mt-2 text-md border py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+            </div>
+        </div>
+
+        <!-- ZIP / Country -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">ZIP / Postal Code</label>
+                <input type="text" name="shipping_zip" required
+                       placeholder="ZIP Code"
+                       class="mt-2 text-md border py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Country</label>
+                <input type="text" name="shipping_country" required
+                       placeholder="Country"
+                       class="mt-2 text-md border py-2 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+            </div>
+        </div>
+
+        <!-- Submit Button aligned to the end -->
+        <div class="flex justify-end">
+            <button type="submit"
+                    class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-6 rounded-md transition duration-200">
+                Proceed to Payment
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

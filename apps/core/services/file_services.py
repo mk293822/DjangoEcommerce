@@ -12,7 +12,38 @@ class FileServices:
         folder = os.path.dirname(file.path)
         if os.path.exists(folder):
             shutil.rmtree(folder)
-            
+    
+    @staticmethod
+    def make_thumb(url):
+        base_path = os.path.dirname(url)
+        _, ext = os.path.splitext(url)
+        return f"{base_path}/thumb{ext}"
+    
+    @staticmethod
+    def get_image(product, variation):
+        if variation:
+            vr_type = (
+                product.variation_types
+                .filter(type='image')
+                .first()
+            )
+
+            if vr_type:
+                option = (
+                    vr_type.options
+                    .filter(id__in=variation.variation_type_option)
+                    .first()
+                )
+
+                if option:
+                    image_obj = option.images.first()
+                    if image_obj:
+                        return FileServices.make_thumb(image_obj.image.url)
+
+        if product.image:
+            return FileServices.make_thumb(product.image.url)
+
+        return None
             
     @staticmethod
     def generate_file_path(instance, filename, foldername, id = "id", model = "product/"):

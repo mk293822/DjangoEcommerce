@@ -114,9 +114,9 @@ def stripe_success(request):
 def stripe_failure(request):
     context = {
         "js_messages": json.dumps([
-        {"tags": m.tags, "text": m.message} 
-        for m in messages.get_messages(request)
-    ])
+            {"tags": m.tags, "text": m.message} 
+            for m in messages.get_messages(request)
+        ]),
     }
     return render(request, 'payments/stripe_failure.html', context)
 
@@ -125,7 +125,14 @@ def stripe_failure(request):
 @require_POST
 def checkout(request):
     user = request.user
-    vendor_id = request.POST.get("vendor_id")
+    post_request = request.POST
+    vendor_id = post_request.get("vendor_id")
+    shipping_name = post_request.get("shipping_name")
+    shipping_address = post_request.get("shipping_address")
+    shipping_city = post_request.get("shipping_city")
+    shipping_state = post_request.get("shipping_state")
+    shipping_zip = post_request.get("shipping_zip")
+    shipping_country = post_request.get("shipping_country")
 
     all_cart_items = CartServices.get_grouped_cart_items(user)
 
@@ -153,7 +160,13 @@ def checkout(request):
                     user=user,
                     vendor=vendor,
                     total_amount=total_price,
-                    status=choices.Status.DRAFT
+                    status=choices.Status.DRAFT,
+                    shipping_name=shipping_name,
+                    shipping_address=shipping_address,
+                    shipping_city=shipping_city,
+                    shipping_country=shipping_country,
+                    shipping_state=shipping_state,
+                    shipping_zip=shipping_zip
                 )
                 orders.append(order)
 

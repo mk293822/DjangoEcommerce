@@ -49,6 +49,7 @@
       {% if request.user.is_staff %}
         <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">To Admin Panel</a>
       {% endif %}
+      <a href="{% url 'orders' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">Orders</a>
       <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">Logout</a>
     </div>
   </div>

@@ -2,7 +2,7 @@ import os
 from django.db import models
 from uuid import uuid4
 from django.conf import settings
-from django.forms import ValidationError
+from apps.core.services.file_services import FileServices
 from apps.products.models.product import Product, ProductVariation
 from django.forms.models import model_to_dict
 from django.db import transaction
@@ -86,33 +86,8 @@ class CartItem(models.Model):
     
 
     def image(self):
-        def make_thumb(url):
-            base_path = os.path.dirname(url)
-            _, ext = os.path.splitext(url)
-            return f"{base_path}/thumb{ext}"
+        return FileServices.get_image(self.product, self.variation)
 
-        if self.variation:
-            vr_type = (
-                self.product.variation_types
-                .filter(type='image')
-                .first()
-            )
-
-            if vr_type:
-                option = (
-                    vr_type.options
-                    .filter(id__in=self.variation.variation_type_option)
-                    .first()
-                )
-
-                if option:
-                    image_obj = option.images.first()
-                    if image_obj:
-                        return make_thumb(image_obj.image.url)
-
-        if self.product.image:
-            return make_thumb(self.product.image.url)
-
-        return None
+        
             
             
