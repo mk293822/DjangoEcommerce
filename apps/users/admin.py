@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-
+from django.contrib.auth.password_validation import validate_password
 from apps.users import choices
 from apps.users.constants import GROUP_CUSTOMER, GROUP_VENDOR
 from .models import User, Vendor
+
+
 User = get_user_model()
 
 # Register your models here.
@@ -13,8 +15,15 @@ class UserAdmin(admin.ModelAdmin):
     model = User
     list_display = ('email', 'name', 'is_active', 'is_staff')
     search_fields = ('email', 'name')
-
-
+    
+    def save_model(self, request, obj, form, change):
+        raw_password = form.cleaned_data.get('password')
+        if raw_password:
+            validate_password(raw_password, obj)
+            obj.set_password(raw_password)
+        
+        super().save_model(request, obj, form, change)
+        
 @admin.register(Vendor)
 class VendorAdmin(admin.ModelAdmin):
     model = Vendor
