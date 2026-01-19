@@ -91,8 +91,34 @@ class Vendor(models.Model):
     cover_image = models.ImageField(upload_to=vendor_cover_image_upload_to, null=True, blank=True)
     status = models.CharField(choices=Status.choices, default=Status.PENDING, max_length=20)
     
+    stripe_account_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    stripe_onboarded = models.BooleanField(default=False)
+    charges_enabled = models.BooleanField(default=False)
+    payouts_enabled = models.BooleanField(default=False)
+    
     def __str__(self):
         return f"{self.user.name}-{self.store_name}"
+    
+    @property
+    def can_receive_payouts(self):
+        return (
+            self.stripe_account_id
+            and self.stripe_onboarded
+            and self.payouts_enabled
+        )
+    
+    @property
+    def is_stripe_connected(self):
+        return bool(
+            self.stripe_account_id
+            and self.payouts_enabled
+        )
+
     
     @classmethod
     def apply(cls, user, store_name, store_address):

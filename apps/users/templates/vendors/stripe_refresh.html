@@ -1,0 +1,56 @@
+{% extends "root.html" %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-12 px-6">
+  <div class="bg-linear-to-tr from-yellow-400 via-yellow-300 to-yellow-500
+              rounded-2xl shadow-xl p-8 flex flex-col items-center gap-6
+              text-center text-gray-900">
+
+    <!-- Icon -->
+    <div class="bg-white rounded-full p-4 text-yellow-500">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856
+               c1.54 0 2.502-1.667 1.732-3L13.732 4
+               c-.77-1.333-2.694-1.333-3.464 0L3.34 16
+               c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+
+    <h1 class="text-3xl font-extrabold">
+      Stripe Setup Incomplete
+    </h1>
+
+    <p class="text-lg">
+      Your Stripe onboarding wasn’t completed.
+      This can happen if the page was closed or timed out.
+    </p>
+
+    <div class="bg-white rounded-lg p-4 text-sm w-full">
+      <p>
+        Click the button below to continue setting up your Stripe account.
+        Stripe will remember what you already filled in.
+      </p>
+    </div>
+
+    <!-- Button -->
+    <form method="post" action="{% url 'profile' %}" class="w-full">
+      {% csrf_token %}
+      <input type="hidden" name="form-type" value="{{ form_types.stripe_connect }}">
+      <button
+        type="submit"
+        class="w-full bg-emerald-600 hover:bg-emerald-700
+               text-white font-semibold px-4 py-2
+               rounded-lg transition">
+        Continue Stripe Setup
+      </button>
+    </form>
+
+    <a href="{% url 'profile' %}" class="text-sm underline">
+      Back to Profile
+    </a>
+
+  </div>
+</div>
+{% endblock %}

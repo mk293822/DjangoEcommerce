@@ -1,6 +1,8 @@
 import json
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+import stripe
 from apps.users import constants
 from apps.users.models import User
 from apps.users.profile_actions import FORM_HANDLERS
@@ -41,6 +43,33 @@ def profile(request):
         "js_messages": js_messages,
     }
     return render(request, "users/profile.html", context)
+
+stripe.api_key = settings.STRIPE_API_KEY
+
+@login_required(login_url="login")
+def stripe_return(request):
+    vendor = request.user.vendor_details
+    
+    if not vendor.stripe_account_id:
+        return redirect("profile")
+
+    account = stripe.Account.retrieve(vendor.stripe_account_id)
+
+    vendor.stripe_onboarded = account.details_submitted
+    vendor.charges_enabled = account.charges_enabled
+    vendor.payouts_enabled = account.payouts_enabled
+    vendor.save()
+
+    return render(request, "vendors/stripe_return.html")
+
+@login_required(login_url="login")
+def stripe_refresh(request):
+    context = {
+        "form_types": {
+            "stripe_connect": constants.FORM_STRIPE_CONNECT
+        }
+    }
+    return render(request, "vendors/stripe_refresh.html", context)
 
 # Create your views here.
 def signup(request):

@@ -1,0 +1,53 @@
+{% extends "root.html" %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-12 px-6">
+  <div class="bg-linear-to-tr from-emerald-500 via-emerald-400 to-emerald-600
+              rounded-2xl shadow-xl p-8 flex flex-col items-center gap-6
+              text-center text-white">
+
+    <!-- Icon -->
+    <div class="bg-white rounded-full p-4 text-emerald-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+
+    <h1 class="text-3xl font-extrabold">
+      Stripe Setup Submitted
+    </h1>
+
+    <p class="text-lg text-emerald-100">
+      Thanks! Your Stripe account details were submitted successfully.
+      Stripe may take a short time to review your information.
+    </p>
+
+    <div class="bg-emerald-100 text-emerald-900 rounded-lg p-4 text-sm w-full">
+      <p>
+        You’ll be able to receive payouts once Stripe finishes verification.
+        You don’t need to do anything else unless Stripe asks for more info.
+      </p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex gap-3 mt-4 w-full">
+      <a href="{% url 'profile' %}"
+         class="flex-1 bg-white text-emerald-600 font-semibold
+                px-4 py-2 rounded-lg hover:bg-emerald-50
+                transition text-center">
+        Back to Profile
+      </a>
+
+      <a href="{% url 'home' %}"
+         class="flex-1 bg-yellow-400 hover:bg-yellow-500
+                text-gray-900 font-semibold px-4 py-2
+                rounded-lg transition text-center">
+        Go to Dashboard
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

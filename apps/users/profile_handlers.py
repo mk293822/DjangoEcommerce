@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.urls import reverse
 from apps.users.services import UserServices
 from django.contrib import messages
 from django.db import DatabaseError, transaction
@@ -108,5 +109,19 @@ def handle_vendor_details(request, user):
 
 
 def handle_stripe_connect(request, user):
-    pass
+    vendor = user.vendor_details
+    
+    if not vendor.stripe_account_id:
+        UserServices.create_express_account(user)
+        
+    link = UserServices.create_onboarding_link(
+        vendor,
+        refresh_url=request.build_absolute_uri(
+            reverse("stripe_refresh")
+        ),
+        return_url=request.build_absolute_uri(
+            reverse("stripe_return")
+        ),
+    )
 
+    return redirect(link.url)
