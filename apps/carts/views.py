@@ -18,6 +18,39 @@ logger = logging.getLogger(__name__)
 @login_required(login_url='login')
 def carts(request):
     
+    if request.method == "POST":
+        qty_raw = request.POST.get("quantity")
+        cart_item_id = request.POST.get("cart_item_id")
+
+        try:
+            qty = int(qty_raw)
+        except (TypeError, ValueError):
+            messages.error(request, "Invalid quantity")
+            return redirect("carts")
+
+        cart_item = CartItem.objects.filter(id=cart_item_id).first()
+        if not cart_item:
+            messages.error(request, "Cart item doesn't exist!")
+            return redirect("carts")
+
+        if qty <= 0:
+            messages.success(
+                request,
+                f"{cart_item.product.name} deleted successfully"
+            )
+            cart_item.delete()
+            return redirect("carts")
+
+        if cart_item.quantity != qty:
+            cart_item.quantity = qty
+            cart_item.save(update_fields=["quantity"])
+            messages.success(
+                request,
+                f"Quantity of {cart_item.product.name} updated successfully"
+            )
+
+        return redirect("carts")
+
     cart, _ = Cart.objects.get_or_create(user=request.user)
     context = {
         'cart_items': CartServices.get_grouped_cart_items(request.user).values(),

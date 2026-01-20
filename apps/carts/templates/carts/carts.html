@@ -35,22 +35,7 @@
           <!-- Cart Items -->
           <div class="space-y-2 max-h-80 no-scrollbar overflow-y-scroll">
             {% for item in data.items %}
-              <a href="{% url 'product_details' item.cart_item.product.slug %}?{{ item.options_query }}" class="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
-                <div class="flex items-center gap-3">
-                  <!-- Optional: Product image -->
-                  {% if item.cart_item.image %}
-                    <img src="{{ item.cart_item.image }}" alt="{{ item.cart_item.product.name }}" class="w-16 h-16 object-cover rounded-md">
-                  {% endif %}
-                  <div>
-                    <p class="font-medium text-slate-900 dark:text-slate-100">{{ item.cart_item.product.name }}</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ item.cart_item.variation.variation_type_options }}</p>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <p class="font-semibold text-slate-900 dark:text-slate-100">${{ item.cart_item.price }}</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">Qty: {{ item.cart_item.quantity }}</p>
-                </div>
-              </a>
+              {% include "carts/cart_item.html" %}
             {% endfor %}
           </div>
 

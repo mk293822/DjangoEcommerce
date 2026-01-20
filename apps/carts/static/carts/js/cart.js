@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		cartItemCounts.forEach((item) => (item.innerHTML = data.cart_item_count));
 		cartItemTotalPrice.forEach(
-			(item) => (item.innerHTML = data.cart_item_total_price)
+			(item) => (item.innerHTML = data.cart_item_total_price),
 		);
 
 		if (cartItem) {
@@ -100,4 +100,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			eventBus.emit("notify:error", "Something went wrong!");
 		}
 	};
+
+	// Update the cart quantity
+	document.querySelectorAll("[data-qty-input]").forEach((input) => {
+		input.addEventListener("blur", () => {
+			if (input.value && parseInt(input.value, 10) >= 1) {
+				input.closest("form").submit();
+			}
+		});
+	});
 });
