@@ -106,7 +106,7 @@ class Vendor(models.Model):
     
     @property
     def can_receive_payouts(self):
-        return (
+        return bool(
             self.stripe_account_id
             and self.stripe_onboarded
             and self.payouts_enabled

@@ -1,3 +1,6 @@
+import json
+import stripe
+import datetime
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.db import transaction
@@ -5,13 +8,14 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-import stripe
-import json
 from apps.carts.models import CartItem
 from apps.carts.services import CartServices
 from apps.orders.models import Order, OrderItem
-from apps.orders import choices
+from apps.orders.choices import Status
+from apps.payments.models import Payout
+from django.utils import timezone
 from apps.products.services.product_details import ProductServices
+from apps.payments.choices import Status as PaymentStatus
 
 stripe.api_key = settings.STRIPE_API_KEY
 
@@ -58,7 +62,7 @@ def stripe_success(request):
         # =============================
         for order in orders:
             order.stripe_payment_intent_id = payment_intent.id
-            order.status = choices.Status.PAID
+            order.status = Status.PAID
             order.save(update_fields=[
                 'stripe_payment_intent_id',
                 'status'
@@ -97,6 +101,36 @@ def stripe_success(request):
                 'platform_fee',
                 'vendor_amount'
             ])
+        
+        # =============================
+        # CREATE / UPDATE PENDING PAYOUT
+        # =============================
+
+        now = timezone.now()
+        today = now.date()
+
+        day_start = timezone.make_aware(
+            datetime.datetime.combine(today, datetime.time.min)
+        )
+        day_end = timezone.make_aware(
+            datetime.datetime.combine(today, datetime.time.max)
+        )
+
+        with transaction.atomic():
+            for order in orders:
+                vendor_user = order.vendor  # AUTH_USER_MODEL
+
+                payout, _ = Payout.objects.select_for_update().get_or_create(
+                    vendor=vendor_user,
+                    status=PaymentStatus.PENDING,
+                    start_from=day_start,
+                    until=day_end,
+                    defaults={"amount": 0},
+                )
+
+                payout.amount += order.vendor_amount
+                payout.save(update_fields=["amount"])
+
 
         return render(request, 'payments/stripe_success.html', {
             'orders': orders,
@@ -112,9 +146,17 @@ def stripe_success(request):
     
     
 def stripe_failure(request):
+    session_id = request.GET.get("session_id")
+
+    if session_id:
+        Order.objects.filter(
+            stripe_checkout_session_id=session_id,
+            status=Status.DRAFT,
+        ).update(status=Status.FAILED)
+
     context = {
         "js_messages": json.dumps([
-            {"tags": m.tags, "text": m.message} 
+            {"tags": m.tags, "text": m.message}
             for m in messages.get_messages(request)
         ]),
     }
@@ -136,7 +178,6 @@ def checkout(request):
 
     all_cart_items = CartServices.get_grouped_cart_items(user)
 
-    # normalize data → ALWAYS LIST
     if vendor_id:
         try:
             checkout_cart_items = [all_cart_items[int(vendor_id)]]
@@ -160,7 +201,7 @@ def checkout(request):
                     user=user,
                     vendor=vendor,
                     total_amount=total_price,
-                    status=choices.Status.DRAFT,
+                    status=Status.DRAFT,
                     shipping_name=shipping_name,
                     shipping_address=shipping_address,
                     shipping_city=shipping_city,
@@ -215,7 +256,7 @@ def checkout(request):
                 line_items=stripe_line_items,
                 mode="payment",
                 success_url=request.build_absolute_uri(reverse('stripe_success')) + "?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=request.build_absolute_uri(reverse('stripe_failure')),
+                cancel_url=request.build_absolute_uri(reverse('stripe_failure')) + "?session_id={CHECKOUT_SESSION_ID}",
             )
             
             for order in orders:

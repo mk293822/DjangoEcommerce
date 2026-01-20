@@ -13,7 +13,7 @@ User = get_user_model()
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     model = User
-    list_display = ('email', 'name', 'is_active', 'is_staff')
+    list_display = ('email', 'name', 'is_active', 'is_staff', 'is_vendor')
     search_fields = ('email', 'name')
     
     def save_model(self, request, obj, form, change):
@@ -27,8 +27,8 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Vendor)
 class VendorAdmin(admin.ModelAdmin):
     model = Vendor
-    list_display = ('user', 'status', 'store_name')
-
+    list_display = ('user', 'status', 'store_name', 'is_stripe_connected', 'can_receive_payouts')
+    
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 

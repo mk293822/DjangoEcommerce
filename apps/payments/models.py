@@ -2,6 +2,8 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+from apps.payments.choices import Status
+
 # Create your models here.
 class Payout(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -11,3 +13,9 @@ class Payout(models.Model):
     until = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    stripe_transfer_id = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
