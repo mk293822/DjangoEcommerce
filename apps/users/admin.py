@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from apps.users import choices
 from apps.users.constants import GROUP_CUSTOMER, GROUP_VENDOR
-from .models import User, Vendor
+from .models import Vendor
 
 
 User = get_user_model()
@@ -18,14 +18,9 @@ class UserAdmin(admin.ModelAdmin):
     
     def save_model(self, request, obj, form, change):
         raw_password = form.cleaned_data.get('password')
-        if raw_password:
+        if raw_password and not raw_password.startswith('pbkdf2_'):
             validate_password(raw_password, obj)
             obj.set_password(raw_password)
-        else:
-            if change:
-                old_password = User.objects.get(pk=obj.pk).password
-                obj.password = old_password
-        
         super().save_model(request, obj, form, change)
         
 @admin.register(Vendor)
