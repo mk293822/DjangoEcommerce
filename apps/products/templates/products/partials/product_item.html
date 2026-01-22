@@ -5,7 +5,7 @@
     <!-- Image -->
     <div class="w-full h-48 bg-slate-200 dark:bg-slate-700 overflow-hidden">
       {% if item.product.image %}
-        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover hover:scale-105 transition duration-300"/>
+        <img src="{{ item.product.public_image_url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover hover:scale-105 transition duration-300"/>
       {% else %}
         <div class="w-full h-full flex items-center justify-center text-slate-500 text-sm">
           No Image for {{ item.product.name }}

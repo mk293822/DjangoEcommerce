@@ -86,7 +86,8 @@ class CartItem(models.Model):
     
 
     def image(self):
-        return FileServices.get_image(self.product, self.variation)
+        path = FileServices.get_image(self.product, self.variation)
+        return FileServices.get_public_url(path)
 
         
             

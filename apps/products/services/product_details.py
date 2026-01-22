@@ -2,6 +2,7 @@ import os
 from urllib.parse import urlencode
 
 from apps.carts import models
+from apps.core.services.file_services import FileServices
 
 class ProductServices:
     
@@ -99,11 +100,9 @@ class ProductServices:
                     if not option.images.exists():
                         continue
                     org_path = option.images.first().image.url
-                    bs_path = os.path.dirname(org_path)
-                    _, ext = os.path.splitext(org_path)
                     option_images[option.id] = {
                         "name": option.name,
-                        "image": f"{bs_path}/thumb{ext}"
+                        "image": FileServices.get_resized_image(org_path)
                     }
                 variation_type_option_images[vr_type.name] = option_images
 
@@ -120,20 +119,15 @@ class ProductServices:
                     continue
                 for img in sel_option.images.all():
                     org_path_sel = img.image.url
-                    b_path = os.path.dirname(org_path_sel)
-                    _, ext = os.path.splitext(org_path_sel)
                     carousel_images.append({
-                        'large': f"{b_path}/large{ext}",
-                        'thumb': f"{b_path}/thumb{ext}",
+                        'large': FileServices.get_resized_image(org_path_sel, "large"),
+                        'thumb': FileServices.get_resized_image(org_path_sel),
                     })
         else:
             org_path_product = product.image.url
-            base_path = os.path.dirname(org_path_product)
-            _, ext = os.path.splitext(org_path_product)
             carousel_images.append({
-                'large': f"{base_path}/large{ext}",
-                'thumb': f"{base_path}/thumb{ext}",
+                'large': FileServices.get_resized_image(org_path_product, "large"),
+                'thumb': FileServices.get_resized_image(org_path_product),
             })
     
-        
         return carousel_images

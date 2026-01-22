@@ -2,6 +2,8 @@
 import uuid
 from django.db import models
 import os
+
+from apps.core.services.file_services import FileServices
 from .product import Product
 from django.db import transaction
 
@@ -71,6 +73,10 @@ class VariationTypeOptionImage(models.Model):
     
     def __str__(self):
         return f"{self.variation_type_option} - Image {self.order}"
+    
+    @property
+    def public_image_url(self):
+        return FileServices.get_public_url(self.image.url)
 
     def save(self, *args, **kwargs):
         with transaction.atomic():

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'storages',
     'tailwind',
     'theme',
     'guardian',
@@ -186,14 +187,35 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 CURRENCY_FORMAT = 'USD'
 CURRENCY_LOCALE = 'en_US'
 ANONYMOUS_USER_NAME = None
 TOAST_DURATION = 3000
 PLATFORM_FEE_PERCENT=10
 
+# STRIPE
 STRIPE_API_KEY=env('STRIPE_SECRET_KEY_TEST', default='secret')
 STRIPE_PUBLISHABLE_KEY=env('STRIPE_PUBLISHABLE_KEY', default='publish')
+
+STORAGES = {
+    "default": {  # for MEDIA
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {  # for STATIC
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='media')
+
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
+
+AWS_S3_ADDRESSING_STYLE = env('AWS_S3_ADDRESSING_STYLE')
+AWS_S3_VERIFY = True
+AWS_QUERYSTRING_AUTH = False
+
+SUPABASE_PROJECT_REF=env('SUPABASE_PROJECT_REF')

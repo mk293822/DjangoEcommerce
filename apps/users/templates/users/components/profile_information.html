@@ -14,7 +14,7 @@
    <div class="mx-auto flex justify-center items-center mt-6 relative w-56 h-56">
         <div id="avatar-container" class="w-56 h-56 rounded-full cursor-pointer overflow-hidden relative">
             {% if user.avatar %}
-                <img class="avatar-icon w-full h-full object-cover" src="{{ user.avatar.url }}" alt="{{ user.name }}">
+                <img class="avatar-icon w-full h-full object-cover" src="{{ user.public_avatar_url }}" alt="{{ user.name }}">
             {% else %}
                 <div class="avatar-icon w-full h-full bg-gray-200 text-gray-800 flex items-center justify-center">
                     <span class="text-xl font-semibold">

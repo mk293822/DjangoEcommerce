@@ -21,6 +21,10 @@ class UserAdmin(admin.ModelAdmin):
         if raw_password:
             validate_password(raw_password, obj)
             obj.set_password(raw_password)
+        else:
+            if change:
+                old_password = User.objects.get(pk=obj.pk).password
+                obj.password = old_password
         
         super().save_model(request, obj, form, change)
         

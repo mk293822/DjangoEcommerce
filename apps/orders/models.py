@@ -101,7 +101,8 @@ class OrderItem(models.Model):
         unique_together = ('order', 'product', 'variation')
 
     def image(self):
-        return FileServices.get_image(self.product, self.variation)
+        path = FileServices.get_image(self.product, self.variation)
+        return FileServices.get_public_url(path)
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} (Order {self.order.id})"

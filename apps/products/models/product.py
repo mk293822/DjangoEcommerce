@@ -67,6 +67,10 @@ class Product(models.Model):
      
     def __str__(self):
         return self.name
+    
+    @property
+    def public_image_url(self):
+        return FileServices.get_public_url(self.image.url)
 
     class Meta:
         permissions = [

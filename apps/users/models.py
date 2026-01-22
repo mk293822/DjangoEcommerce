@@ -1,4 +1,3 @@
-import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
@@ -6,8 +5,6 @@ from apps.core.services.file_services import FileServices
 from apps.users.choices import Status
 from django.db import transaction
 
-def avatar_upload_to(instance, filename):
-    return FileServices.generate_file_path(instance, filename, 'avatars', 'uuid', model="")
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -31,7 +28,9 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-# Create your models here.
+def avatar_upload_to(instance, filename):
+    return FileServices.generate_file_path(instance, filename, 'avatars', 'uuid', model="")
+
 class User(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     email = models.EmailField(unique=True)
@@ -50,16 +49,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
     
     @property
+    def public_avatar_url(self):
+        return FileServices.get_public_url(self.avatar.url)
+    
+    @property
     def thumb_avatar(self):
-        if not self.avatar:
+        file = self.avatar
+        if not file:
             return ""
-        
-        original_path = self.avatar.url
-        
-        base_path = os.path.dirname(original_path)
-        _, ext = os.path.splitext(original_path)
-        
-        return f"{base_path}/thumb{ext}"
+        return FileServices.get_resized_image(file.url)
     
     def get_vendor_status(self):
         try:

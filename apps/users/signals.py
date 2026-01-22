@@ -13,9 +13,13 @@ IMAGE_SIZES = {
     "thumb": (128, 128),
 }
 
+def delete_old_image(old_image, new_image):
+    if old_image and (old_image != new_image or not new_image):
+        FileServices.delete_remote_folder(old_image)
+
 @receiver(pre_delete, sender=User)
 def delete_avatar_on_user_delete(sender, instance, **kwargs):
-    FileServices.delete_file_from_media(instance.avatar)
+    FileServices.delete_remote_folder(instance.avatar)
 
 @receiver(pre_save, sender=User)
 def remove_avatar_if_cleared(sender, instance: User, **kwargs):
@@ -23,19 +27,18 @@ def remove_avatar_if_cleared(sender, instance: User, **kwargs):
         return
     
     old_user = User.objects.get(pk=instance.pk)
-    
-    if old_user.avatar and not instance.avatar:
-        FileServices.delete_file_from_media(old_user.avatar)
+    if old_user:
+        delete_old_image(old_user.avatar, instance.avatar)
 
 @receiver(post_save, sender=User)
 def resize_user_avatar(sender, instance, **kwargs):
     if instance.avatar:
-        FileServices.resize_image(instance.avatar.path, IMAGE_SIZES)
+        FileServices.resize_image(instance.avatar, IMAGE_SIZES)
     
 # Vendor
 @receiver(pre_delete, sender=Vendor)
 def delete_cover_image_on_vendor_delete(sender, instance, **kwargs):
-    FileServices.delete_file_from_media(instance.cover_image)
+    FileServices.delete_remote_folder(instance.cover_image)
 
 @receiver(pre_save, sender=Vendor)
 def remove_cover_image_if_cleared(sender, instance: Vendor, **kwargs):
@@ -43,14 +46,13 @@ def remove_cover_image_if_cleared(sender, instance: Vendor, **kwargs):
         return
     
     old_vendor = Vendor.objects.get(pk=instance.pk)
-    
-    if old_vendor.cover_image and not instance.cover_image:
-        FileServices.delete_file_from_media(old_vendor.cover_image)
+    if old_vendor:
+        delete_old_image(old_vendor.cover_image, instance.cover_image)
 
 @receiver(post_save, sender=Vendor)
 def resize_vendor_cover_image(sender, instance, **kwargs):
     if instance.cover_image:
-        FileServices.resize_image(instance.cover_image.path, IMAGE_SIZES)
+        FileServices.resize_image(instance.cover_image, IMAGE_SIZES)
         
 
 # Migrate roles and permissions

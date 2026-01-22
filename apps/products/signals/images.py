@@ -12,12 +12,12 @@ IMAGE_SIZES = {
 
 def delete_old_image(old_image, new_image):
     if old_image and (old_image != new_image or not new_image):
-        FileServices.delete_file_from_media(old_image)
+        FileServices.delete_remote_folder(old_image)
 
 
 @receiver(pre_delete, sender=VariationTypeOptionImage)
 def delete_variation_image(sender, instance, **kwargs):
-    FileServices.delete_file_from_media(instance.image)
+    FileServices.delete_remote_folder(instance.image)
 
 
 @receiver(pre_save, sender=VariationTypeOptionImage)
@@ -33,12 +33,12 @@ def replace_variation_image(sender, instance, **kwargs):
 @receiver(post_save, sender=VariationTypeOptionImage)
 def resize_variation_image(sender, instance, **kwargs):
     if instance.image:
-        FileServices.resize_image(instance.image.path, IMAGE_SIZES)
+        FileServices.resize_image(instance.image, IMAGE_SIZES)
 
 
 @receiver(pre_delete, sender=Product)
 def delete_product_image(sender, instance, **kwargs):
-    FileServices.delete_file_from_media(instance.image)
+    FileServices.delete_remote_folder(instance.image)
 
 
 @receiver(pre_save, sender=Product)
@@ -54,4 +54,4 @@ def replace_product_image(sender, instance, **kwargs):
 @receiver(post_save, sender=Product)
 def resize_product_image(sender, instance, **kwargs):
     if instance.image:
-        FileServices.resize_image(instance.image.path, IMAGE_SIZES)
+        FileServices.resize_image(instance.image, IMAGE_SIZES)
