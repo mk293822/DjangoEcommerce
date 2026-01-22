@@ -32,7 +32,8 @@ This project supports product management, shopping cart functionality, checkout,
 - Python 3.10+  
 - pip  
 - virtualenv  
-- Node.js & npm (if using React frontend)  
+- django-tailwindcss
+- browser reload 
 
 ---
 
